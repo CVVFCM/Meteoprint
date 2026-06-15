@@ -67,9 +67,8 @@ jobs:
             AWS_SECRET_ACCESS_KEY: ${{ secrets.SCW_SECRET_KEY }}
             SCW_ACCESS_KEY: ${{ secrets.SCW_ACCESS_KEY }}
             SCW_SECRET_KEY: ${{ secrets.SCW_SECRET_KEY }}
-            TAILSCALE_OAUTH_CLIENT_ID: ${{ secrets.TS_OAUTH_CLIENT_ID }}
-            TAILSCALE_OAUTH_CLIENT_SECRET: ${{ secrets.TS_OAUTH_SECRET }}
-            NEON_API_KEY: ${{ secrets.NEON_API_KEY }}
+            TAILSCALE_OAUTH_CLIENT_ID: ${{ secrets.TAILSCALE_OAUTH_CLIENT_ID }}
+            TAILSCALE_OAUTH_CLIENT_SECRET: ${{ secrets.TAILSCALE_OAUTH_CLIENT_SECRET }}
             CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
             GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         steps:
