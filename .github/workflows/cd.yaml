@@ -123,7 +123,7 @@ jobs:
             -   name: Trust remote host
                 run: ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
             -   name: Docker login
-                run: docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
+                run: docker login ${{ secrets.DOCKER_REGISTRY }} -u nologin -p ${{ secrets.REGISTRY_PASSWORD }}
             -   name: Docker ps (healthcheck)
                 run: docker ps
             -   name: Deploy to ${{ vars.TARGET_ENV }}
