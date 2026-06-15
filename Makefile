@@ -1,0 +1,60 @@
+HTTP_PORT ?= 80
+HTTPS_PORT ?= 443
+HTTP3_PORT ?= 443
+DATABASE_PORT ?= 5432
+DOCKER_COMPOSE = EXTERNAL_USER_ID=$(shell id -u) HTTP_PORT=$(HTTP_PORT) HTTPS_PORT=$(HTTPS_PORT) HTTP3_PORT=$(HTTP3_PORT) DATABASE_PORT=$(DATABASE_PORT) docker compose
+
+.PHONY: help
+help: ## display this help message
+	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+
+.PHONY: pull
+pull: ## Build the docker images
+	@$(DOCKER_COMPOSE) pull --ignore-pull-failures
+
+.PHONY: build
+build: ## Build the docker images
+	@$(DOCKER_COMPOSE) build
+
+.PHONY: reset
+reset: ## Reset (or create) the database
+	@$(DOCKER_COMPOSE) exec php composer reset
+
+.PHONY: cli
+cli: ## Open a CLI in the PHP container. If you need this it means that I fucked up this Makefile.
+	@$(DOCKER_COMPOSE) exec php bash
+
+vendor/: ## Uh ?
+	@$(DOCKER_COMPOSE) run --rm php composer install
+
+.PHONY: up
+up: ## Just turn-on the containers
+	@mkdir -p var/data
+	@$(DOCKER_COMPOSE) up -d
+
+.configured:
+	test -f .configured || make first_run
+	touch .configured
+
+.PHONY: run
+run: .configured up ## Run the project. Create the Database  and build the images if needed
+
+.infra/docker/tls/cert.pem:
+	mkdir -p .infra/docker/tls
+	mkcert -cert-file .infra/docker/tls/cert.pem -key-file=.infra/docker/tls/cert.key localhost 127.0.0.1
+
+assets/vendor: ## Install importmap vendors
+	@$(DOCKER_COMPOSE) exec php bin/console importmap:install
+
+.PHONY: first_run
+first_run: .infra/docker/tls/cert.pem pull build vendor/ up reset assets/vendor
+
+.PHONY: clean
+clean: ## Stop the containers and remove all the data
+	$(DOCKER_COMPOSE) down -v
+	rm -rf .configured .infra/docker/tls/cert.pem public/assets assets/vendor public/bundles var/* vendor
+
+.PHONY: cs
+cs: ## Fix code style
+	@docker run --rm -v $(PWD):/app -w /app ghcr.io/php-cs-fixer/php-cs-fixer:3-php8.5 fix
+	@docker compose exec -T php ./vendor/bin/twig-cs-fixer fix

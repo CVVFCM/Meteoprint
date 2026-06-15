@@ -1,0 +1,65 @@
+provider "github" {
+  owner = "yohang"
+}
+
+resource "random_bytes" "app_secret" {
+  length = 32
+}
+
+resource "tls_private_key" "deploy" {
+  algorithm = "ED25519"
+}
+
+resource "github_repository_environment" "deploy" {
+  repository  = "meteoprint"
+  environment = "prod"
+}
+
+resource "github_actions_environment_secret" "ssh_key" {
+  repository  = "meteoprint"
+  environment = github_repository_environment.deploy.environment
+  secret_name = "SSH_PRIVATE_KEY"
+  value       = tls_private_key.deploy.private_key_openssh
+}
+
+resource "github_actions_environment_secret" "ssh_host" {
+  repository  = "meteoprint"
+  environment = github_repository_environment.deploy.environment
+  secret_name = "SSH_HOST"
+  value       = "meteoprint"
+}
+
+resource "github_actions_environment_secret" "ssh_user" {
+  repository  = "meteoprint"
+  environment = github_repository_environment.deploy.environment
+  secret_name = "SSH_USER"
+  value       = "debian"
+}
+
+resource "github_actions_environment_secret" "database_url" {
+  repository  = "meteoprint"
+  environment = github_repository_environment.deploy.environment
+  secret_name = "DATABASE_URL"
+  value       = neon_project.meteoprint.connection_uri
+}
+
+resource "github_actions_environment_secret" "app_secret" {
+  repository  = "meteoprint"
+  environment = github_repository_environment.deploy.environment
+  secret_name = "APP_SECRET"
+  value       = random_bytes.app_secret.hex
+}
+
+resource "github_actions_environment_variable" "app_env" {
+  repository    = "meteoprint"
+  environment   = github_repository_environment.deploy.environment
+  variable_name = "APP_ENV"
+  value         = "prod"
+}
+
+resource "github_actions_environment_variable" "server_name" {
+  repository    = "meteoprint"
+  environment   = github_repository_environment.deploy.environment
+  variable_name = "SERVER_NAME"
+  value         = "meteoprint.giarel.li"
+}

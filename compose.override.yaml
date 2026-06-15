@@ -1,0 +1,42 @@
+services:
+  php:
+    depends_on: [ database ]
+    environment:
+      APP_ENV: dev
+      APP_DEBUG: true
+      FRANKENPHP_WORKER_CONFIG: watch
+      FRANKENPHP_SITE_CONFIG: hot_reload
+      # See https://xdebug.org/docs/all_settings#mode
+      XDEBUG_MODE: "${XDEBUG_MODE:-develop}"
+      CADDY_EXTRA_CONFIG: |
+        https:// {
+            tls /app/.infra/docker/tls/cert.pem /app/.infra/docker/tls/cert.key
+        }
+      MERCURE_EXTRA_DIRECTIVES: anonymous
+    command: [ 'frankenphp', 'run', '--config', '/etc/caddy/Caddyfile', '--watch' ]
+    volumes:
+      - '.:/app:rw'
+      - './.infra/docker/php/conf.d/symfony.dev.ini:/usr/local/etc/php/conf.d/symfony.ini:ro'
+
+  scheduler:
+    profiles: [ 'do-no-start' ]
+
+  database:
+    image: postgres:18-trixie
+    volumes: [ 'database-data:/var/lib/postgresql' ]
+    ports:
+      - target: 5432
+        published: ${DATABASE_PORT:-5432}
+        protocol: tcp
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-d", "${POSTGRES_DB:-meteoprint}", "-U", "${POSTGRES_USER:-meteoprint}" ]
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    environment:
+      - POSTGRES_DB=${DATABASE_DB:-meteoprint}
+      - POSTGRES_USER=${DATABASE_USER:-meteoprint}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD:-meteoprint}
+
+volumes:
+  database-data: ~
