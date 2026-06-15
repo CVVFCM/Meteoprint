@@ -34,7 +34,7 @@ jobs:
                 id: meta
                 uses: docker/metadata-action@v6
                 with:
-                    images: ghcr.io/cvvfcm/meteoprint/app
+                    images: cvvfcm/meteoprint-app
                     tags: |
                         type=ref,event=branch
                         type=semver,pattern={{version}}
@@ -123,7 +123,7 @@ jobs:
             -   name: Trust remote host
                 run: ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
             -   name: Docker login
-                run: docker login ${{ secrets.DOCKER_REGISTRY }} -u nologin -p ${{ secrets.REGISTRY_PASSWORD }}
+                run: docker login -u cvvfcm -p ${{ secrets.REGISTRY_PASSWORD }}
             -   name: Docker ps (healthcheck)
                 run: docker ps
             -   name: Deploy to ${{ vars.TARGET_ENV }}

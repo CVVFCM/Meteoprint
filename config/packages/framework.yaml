@@ -11,6 +11,14 @@ framework:
                 base_uri: '%env(OPEN_METEO_BASE_URL)%'
                 retry_failed:
                     max_retries: 2
+            ffvoile.client:
+                base_uri: 'https://carto.ffvoile.fr'
+                headers:
+                    Accept: 'application/json'
+                    User-Agent: 'meteoprint club importer (+https://github.com/yohang/meteoprint)'
+                    Referer: 'https://carto.ffvoile.fr/carte/'
+                retry_failed:
+                    max_retries: 2
 
     #esi: true
     #fragments: true

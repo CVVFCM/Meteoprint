@@ -15,20 +15,6 @@ resource "github_repository_environment" "deploy" {
   environment = "prod"
 }
 
-resource "github_actions_environment_secret" "docker_registry" {
-  repository  = "meteoprint"
-  environment = github_repository_environment.deploy.environment
-  secret_name = "DOCKER_REGISTRY"
-  value       = scaleway_registry_namespace.docker_registry.endpoint
-}
-
-resource "github_actions_environment_secret" "image_prefix" {
-  repository  = "meteoprint"
-  environment = github_repository_environment.deploy.environment
-  secret_name = "IMAGE_PREFIX"
-  value       = "${scaleway_registry_namespace.docker_registry.endpoint}/meteoprint/"
-}
-
 resource "github_actions_environment_secret" "ssh_key" {
   repository  = "meteoprint"
   environment = github_repository_environment.deploy.environment
@@ -76,11 +62,4 @@ resource "github_actions_environment_variable" "server_name" {
   environment   = github_repository_environment.deploy.environment
   variable_name = "SERVER_NAME"
   value         = "meteoprint.cvvfcm.fr"
-}
-
-resource "github_actions_environment_secret" "registry_password" {
-    repository  = "meteoprint"
-    environment = github_repository_environment.deploy.environment
-    secret_name = "REGISTRY_PASSWORD"
-    value       = scaleway_iam_api_key.github_cd_key.secret_key
 }
