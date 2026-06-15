@@ -5,6 +5,13 @@ framework:
     # Note that the session will be started ONLY if you read or write from it.
     session: true
 
+    http_client:
+        scoped_clients:
+            open_meteo.client:
+                base_uri: '%env(OPEN_METEO_BASE_URL)%'
+                retry_failed:
+                    max_retries: 2
+
     #esi: true
     #fragments: true
 
