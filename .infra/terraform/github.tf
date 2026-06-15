@@ -36,13 +36,6 @@ resource "github_actions_environment_secret" "ssh_user" {
   value       = "debian"
 }
 
-resource "github_actions_environment_secret" "database_url" {
-  repository  = "meteoprint"
-  environment = github_repository_environment.deploy.environment
-  secret_name = "DATABASE_URL"
-  value       = scaleway_sdb_sql_database.database.endpoint
-}
-
 resource "github_actions_environment_secret" "app_secret" {
   repository  = "meteoprint"
   environment = github_repository_environment.deploy.environment

@@ -1,5 +1,6 @@
 x-base-php-config: &php
   image: ${IMAGE_PREFIX:-cvvfcm/meteoprint-}app:${APP_VERSION:-latest}
+  depends_on: [ database ]
   restart: unless-stopped
   environment:
     SERVER_NAME: ${SERVER_NAME:-localhost}, php:80
@@ -40,6 +41,22 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+
+  database:
+    image: postgres:18-trixie
+    volumes: [ 'database-data:/var/lib/postgresql' ]
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-d", "${POSTGRES_DB:-meteoprint}", "-U", "${POSTGRES_USER:-meteoprint}" ]
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    environment:
+      - POSTGRES_DB=${DATABASE_DB:-meteoprint}
+      - POSTGRES_USER=${DATABASE_USER:-meteoprint}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD:-meteoprint}
+
+volumes:
+  database-data: ~
 
 networks:
   default:
