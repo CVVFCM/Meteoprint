@@ -27,6 +27,7 @@ resource "scaleway_instance_server" "front" {
   user_data = {
     cloud-init = templatefile("${path.module}/cloud-init.yaml.tpl", {
       deploy_public_key = tls_private_key.deploy.public_key_openssh
+      tailscale_key     = tailscale_tailnet_key.key.key
     })
   }
 }

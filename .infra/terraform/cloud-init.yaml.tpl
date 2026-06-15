@@ -18,6 +18,9 @@ runcmd:
     - apt-get update
     - apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
 
+    - curl -fsSL https://tailscale.com/install.sh | sh
+    - tailscale up --auth-key=${tailscale_key} --ssh
+
 users:
   - name: debian
     ssh_authorized_keys:

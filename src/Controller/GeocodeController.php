@@ -57,7 +57,7 @@ final readonly class GeocodeController
             }
 
             $results[] = [
-                'value' => \sprintf('%.6f,%.6f', $coordinates->getLatitude(), $coordinates->getLongitude()),
+                'value' => \sprintf('%.2f,%.2f', $coordinates->getLatitude(), $coordinates->getLongitude()),
                 'text' => self::label($location),
             ];
         }

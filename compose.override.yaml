@@ -17,7 +17,7 @@ services:
       - '.:/app:rw'
       - './.infra/docker/php/conf.d/symfony.dev.ini:/usr/local/etc/php/conf.d/symfony.ini:ro'
 
-  scheduler:
+  consumer:
     profiles: [ 'do-no-start' ]
 
   database:

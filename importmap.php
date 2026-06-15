@@ -33,4 +33,5 @@ return [
     'tom-select/dist/css/tom-select.bootstrap4.css' => ['version' => '2.6.1', 'type' => 'css'],
     'tom-select/dist/css/tom-select.bootstrap5.css' => ['version' => '2.6.1', 'type' => 'css'],
     '@symfony/stimulus-bundle' => ['path' => './vendor/symfony/stimulus-bundle/assets/dist/loader.js'],
+    '@hotwired/turbo' => ['version' => '8.0.23'],
 ];

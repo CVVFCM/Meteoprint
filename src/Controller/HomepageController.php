@@ -36,9 +36,10 @@ final readonly class HomepageController
             // Guaranteed "lat,lon" by PlaceSearchType's Regex constraint.
             $parts = explode(',', \is_string($value) ? $value : '', 2);
 
+            // Arome HD resolution is ~1.5 km → 2 decimals is enough and keeps the URL tidy.
             return new RedirectResponse($this->urlGenerator->generate('forecast', [
-                'latitude' => $parts[0],
-                'longitude' => $parts[1] ?? '',
+                'latitude' => round((float) $parts[0], 2),
+                'longitude' => round((float) ($parts[1] ?? 0), 2),
             ]));
         }
 

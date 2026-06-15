@@ -23,7 +23,8 @@ final class HomepageControllerTest extends WebTestCase
         $client = static::createClient();
         $client->request('GET', '/', ['place_search' => ['place' => '48.853000,2.349000']]);
 
-        self::assertResponseRedirects('/forecast/48.853000/2.349000');
+        // Coordinates are rounded to 2 decimals (Arome HD resolution).
+        self::assertResponseRedirects('/forecast/48.85/2.35');
     }
 
     public function testInvalidSelectionDoesNotRedirect(): void

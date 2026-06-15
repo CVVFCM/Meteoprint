@@ -703,8 +703,8 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  * }
  * @psalm-type MercureConfig = array{
  *     hubs?: array<string, array{ // Default: []
- *         url?: scalar|Param|null, // URL of the hub's publish endpoint
- *         public_url?: scalar|Param|null, // URL of the hub's public endpoint // Default: null
+ *         url?: scalar|Param|null, // URL of the hub's publish endpoint // Default: null
+ *         public_url?: scalar|Param|null, // URL of the hub's public endpoint
  *         jwt?: string|array{ // JSON Web Token configuration.
  *             value?: scalar|Param|null, // JSON Web Token to use to publish to this hub.
  *             provider?: scalar|Param|null, // The ID of a service to call to provide the JSON Web Token.
@@ -1131,7 +1131,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         enabled?: bool|Param, // Default: false
  *     },
  *     intl?: bool|array{
- *         enabled?: bool|Param, // Default: false
+ *         enabled?: bool|Param, // Default: true
  *     },
  *     cssinliner?: bool|array{
  *         enabled?: bool|Param, // Default: false
@@ -1205,6 +1205,16 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  * @psalm-type DunglasDoctrineJsonOdmConfig = array{
  *     type_map?: array<string, scalar|Param|null>,
  * }
+ * @psalm-type TurboConfig = array{
+ *     broadcast?: bool|array{
+ *         enabled?: bool|Param, // Default: true
+ *         entity_template_prefixes?: list<scalar|Param|null>,
+ *         doctrine_orm?: bool|array{ // Enable the Doctrine ORM integration
+ *             enabled?: bool|Param, // Default: true
+ *         },
+ *     },
+ *     default_transport?: scalar|Param|null, // Default: "default"
+ * }
  * @psalm-type ConfigType = array{
  *     imports?: ImportsConfig,
  *     parameters?: ParametersConfig,
@@ -1219,6 +1229,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     bazinga_geocoder?: BazingaGeocoderConfig,
  *     stimulus?: StimulusConfig,
  *     dunglas_doctrine_json_odm?: DunglasDoctrineJsonOdmConfig,
+ *     turbo?: TurboConfig,
  *     "when@dev"?: array{
  *         imports?: ImportsConfig,
  *         parameters?: ParametersConfig,
@@ -1235,6 +1246,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         bazinga_geocoder?: BazingaGeocoderConfig,
  *         stimulus?: StimulusConfig,
  *         dunglas_doctrine_json_odm?: DunglasDoctrineJsonOdmConfig,
+ *         turbo?: TurboConfig,
  *     },
  *     "when@prod"?: array{
  *         imports?: ImportsConfig,
@@ -1250,6 +1262,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         bazinga_geocoder?: BazingaGeocoderConfig,
  *         stimulus?: StimulusConfig,
  *         dunglas_doctrine_json_odm?: DunglasDoctrineJsonOdmConfig,
+ *         turbo?: TurboConfig,
  *     },
  *     "when@test"?: array{
  *         imports?: ImportsConfig,
@@ -1266,6 +1279,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         bazinga_geocoder?: BazingaGeocoderConfig,
  *         stimulus?: StimulusConfig,
  *         dunglas_doctrine_json_odm?: DunglasDoctrineJsonOdmConfig,
+ *         turbo?: TurboConfig,
  *     },
  *     ...<string, ExtensionType|array{ // extra keys must follow the when@%env% pattern or match an extension alias
  *         imports?: ImportsConfig,

@@ -1,3 +1,178 @@
+:root {
+    --ink: #14213d;
+    --muted: #5b677a;
+    --line: #d9e2ec;
+    --bg: #f7f9fc;
+}
+
+* {
+    box-sizing: border-box;
+}
+
 body {
-    background-color: skyblue;
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    line-height: 1.4;
+}
+
+.forecast {
+    max-width: 60rem;
+    margin: 0 auto;
+    padding: 1.5rem 1rem 3rem;
+}
+
+.forecast__head {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.forecast__head h1 {
+    margin: 0 0 0.25rem;
+    font-size: 2rem;
+}
+
+.forecast__coords {
+    margin: 0;
+    color: var(--muted);
+}
+
+.forecast__back {
+    display: inline-block;
+    margin-top: 0.5rem;
+    color: var(--ink);
+}
+
+.forecast__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+}
+
+.day {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 0.75rem;
+    padding: 1rem 1.25rem;
+}
+
+.day__title {
+    margin: 0 0 0.75rem;
+    font-size: 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.day__date {
+    color: var(--muted);
+    font-weight: 400;
+    font-size: 1rem;
+}
+
+.day__loading {
+    color: var(--muted);
+    font-style: italic;
+}
+
+.slots {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.slot {
+    display: grid;
+    grid-template-columns: 6rem 2.5rem 1fr auto;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 0;
+    border-top: 1px solid var(--line);
+    font-size: 1.1rem;
+}
+
+.slot:first-child {
+    border-top: 0;
+}
+
+.slot__when {
+    font-weight: 600;
+}
+
+.slot__icon {
+    font-size: 1.6rem;
+    text-align: center;
+}
+
+.slot__temp {
+    font-variant-numeric: tabular-nums;
+}
+
+.slot__wind {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    text-align: right;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+.slot__wind-speed {
+    color: var(--muted);
+    font-size: 0.95rem;
+}
+
+.slot__arrow {
+    display: inline-block;
+}
+
+@media (max-width: 40rem) {
+    .forecast__grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@page {
+    size: A4 landscape;
+    /* margin: 0 drops the browser-injected header/footer (url, date, page number). */
+    margin: 0;
+}
+
+@media print {
+    html,
+    body {
+        height: 100%;
+        margin: 0;
+    }
+
+    body {
+        background: #fff;
+        color: #000;
+    }
+
+    /* Drop the page header (title, coords, back-home) and any links on paper. */
+    .forecast__head,
+    .forecast a,
+    turbo-mercure-stream-source {
+        display: none;
+    }
+
+    /* Fill exactly one page (height relative to the page box, not 100vh which overflows)
+       and centre the day columns vertically. */
+    .forecast {
+        max-width: none;
+        height: 100%;
+        margin: 0;
+        padding: 10mm;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        overflow: hidden;
+    }
+
+    .day {
+        border-color: #000;
+        break-inside: avoid;
+    }
 }

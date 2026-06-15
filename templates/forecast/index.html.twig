@@ -3,9 +3,23 @@
 {% block title %}{{ 'forecast.title'|trans }}{% endblock %}
 
 {% block body %}
-    <main>
-        <h1>{{ 'forecast.title'|trans }}</h1>
-        <p>{{ 'forecast.coordinates'|trans({'%latitude%': latitude, '%longitude%': longitude}) }}</p>
-        <p><a href="{{ path('homepage') }}">{{ 'forecast.back'|trans }}</a></p>
+    {{ turbo_stream_from(topic) }}
+
+    <main class="forecast">
+        <header class="forecast__head">
+            <h1>{{ 'forecast.title'|trans }}</h1>
+            <p class="forecast__coords">{{ 'forecast.coordinates'|trans({'%latitude%': position.latitude, '%longitude%': position.longitude}) }}</p>
+            <a class="forecast__back" href="{{ path('homepage') }}">{{ 'forecast.back'|trans }}</a>
+        </header>
+
+        <div class="forecast__grid">
+            {% for entry in days %}
+                {{ include('forecast/_day.html.twig', {
+                    day: entry.day,
+                    forecast: entry.forecast,
+                    label: loop.first ? 'forecast.today' : 'forecast.tomorrow',
+                }) }}
+            {% endfor %}
+        </div>
     </main>
 {% endblock %}

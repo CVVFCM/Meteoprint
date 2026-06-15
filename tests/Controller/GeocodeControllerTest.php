@@ -31,7 +31,7 @@ final class GeocodeControllerTest extends WebTestCase
         $data = json_decode((string) $client->getResponse()->getContent(), true, flags: \JSON_THROW_ON_ERROR);
         self::assertSame([
             'results' => [
-                ['value' => '48.856600,2.352200', 'text' => 'Paris, Île-de-France, France'],
+                ['value' => '48.86,2.35', 'text' => 'Paris, Île-de-France, France'],
             ],
         ], $data);
     }
