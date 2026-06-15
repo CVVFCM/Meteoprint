@@ -1,5 +1,5 @@
 provider "github" {
-  owner = "yohang"
+  owner = "CVVFCM"
 }
 
 resource "random_bytes" "app_secret" {

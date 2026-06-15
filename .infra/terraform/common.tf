@@ -3,6 +3,6 @@ resource "scaleway_account_project" "meteoprint" {
 }
 
 provider "scaleway" {
-  zone   = "fr-par-1"
-  region = "fr-par"
+  zone   = "nl-ams-1"
+  region = "nl-ams"
 }
