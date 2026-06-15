@@ -1,5 +1,5 @@
 x-base-php-config: &php
-  image: ${IMAGE_PREFIX:-ghcr.io/yohang/meteoprint/}app:${DOCKER_TAG:-latest}
+  image: ${IMAGE_PREFIX:-ghcr.io/CVVFCM/meteoprint/}app:${DOCKER_TAG:-latest}
   restart: unless-stopped
   environment:
     SERVER_NAME: ${SERVER_NAME:-localhost}, php:80
@@ -33,7 +33,7 @@ services:
 
   scheduler:
     <<: *php
-    command: 'php bin/console messenger:consume scheduler_recurrent --no-debug -vv'
+    command: 'php bin/console messenger:consume async --no-debug -vv'
     healthcheck:
       test: [ 'CMD', 'php', '-v' ]
       interval: 30s

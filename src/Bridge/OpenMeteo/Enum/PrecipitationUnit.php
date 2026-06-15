@@ -9,5 +9,5 @@ enum PrecipitationUnit: string
     case MM = 'mm';
     case INCH = 'inch';
 
-    public const DEFAULT = self::MM;
+    public const self DEFAULT = self::MM;
 }

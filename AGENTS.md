@@ -69,6 +69,36 @@ App served at `https://localhost` (ports 80/443 configurable via `HTTP_PORT`/`HT
   that interface.
 - **Third-party integrations** live under the `App\Bridge\` namespace
   (e.g. the Open-Meteo SDK at `App\Bridge\OpenMeteo\`).
+- **Code quality & typing** — use every quality keyword the language offers:
+  - `declare(strict_types=1);` in **every** PHP file.
+  - Classes are **`final` by default**. Exceptions: Doctrine entities (lazy-loading
+    proxies — non-final unless using PHP 8.4 native lazy objects), interfaces, and
+    deliberate extension points.
+  - **`readonly`** on every constructor-promoted property and any property assigned
+    once. When **all** of a class's state is read-only, declare the whole class
+    `final readonly` (and drop the now-redundant per-property `readonly`) — this
+    covers value objects, DTOs, and stateless services/controllers. Not possible
+    when extending a non-readonly parent (Symfony form types, native exceptions): keep
+    per-property `readonly` there.
+  - **Full type coverage**: every parameter, return, and property is typed natively;
+    fall back to `mixed` only when unavoidable.
+  - Document **array shapes** with PHPDoc generics (`list<T>`, `array<K, V>`,
+    `array{...}`) wherever a bare `array` appears — PHPStan heavy requires it.
+  - Typehint the **narrowest interface** (`UrlGeneratorInterface`, `FormFactoryInterface`, …).
+  - Native **backed enums** for closed sets.
+  - **Typed class constants** (PHP 8.3+): `private const int MAX = 8;`, `public const self DEFAULT = self::X;`.
+- **Route names** are bare and meaningful (`homepage`, `forecast`, `geocode_search`) —
+  do NOT prefix with `app_` (it carries no information).
+- **HTTP verbs** use `Request::METHOD_*` constants, never string literals
+  (`methods: [Request::METHOD_GET]`, `'method' => Request::METHOD_POST`). Exception:
+  the `App\Bridge\` SDKs stay decoupled from HttpFoundation and pass the verb as a
+  string to the HTTP client.
+- **Controllers** do NOT extend `AbstractController`. They are invokable (ADR),
+  `final`, and receive collaborators via constructor injection (`FormFactoryInterface`,
+  Twig `Environment`, `UrlGeneratorInterface`, …), returning `Response` /
+  `JsonResponse` / `RedirectResponse` directly. `src/Controller/` is registered with
+  the `controller.service_arguments` tag in `services.yaml`. (Set the 422 status on an
+  invalid submitted form by hand — there is no base class to do it.)
 
 ## Linters — MANDATORY
 

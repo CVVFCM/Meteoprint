@@ -20,6 +20,10 @@ build: ## Build the docker images
 reset: ## Reset (or create) the database
 	@$(DOCKER_COMPOSE) exec php composer reset
 
+.PHONY: reset-test
+reset-test: ## Reset (or create) the test database
+	@$(DOCKER_COMPOSE) exec -eAPP_ENV=test php composer reset
+
 .PHONY: cli
 cli: ## Open a CLI in the PHP container. If you need this it means that I fucked up this Makefile.
 	@$(DOCKER_COMPOSE) exec php bash
@@ -65,4 +69,4 @@ test: vendor/
 
 .PHONY: stan
 stan: vendor/
-	@$(DOCKER_COMPOSE) exec -T php ./vendor/bin/phpstan analyse --ansi
+	@$(DOCKER_COMPOSE) exec -T php ./vendor/bin/phpstan analyse --ansi --memory-limit 1G

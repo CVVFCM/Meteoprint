@@ -7,7 +7,7 @@ namespace App\Bridge\OpenMeteo\Response;
 /**
  * Typed view over a single-location GET /v1/forecast response.
  */
-final class ForecastResponse
+final readonly class ForecastResponse
 {
     /**
      * @param array<string, string> $hourlyUnits
@@ -16,21 +16,21 @@ final class ForecastResponse
      * @param array<string, string> $minutely15Units
      */
     public function __construct(
-        public readonly float $latitude,
-        public readonly float $longitude,
-        public readonly ?float $elevation,
-        public readonly ?float $generationTimeMs,
-        public readonly ?int $utcOffsetSeconds,
-        public readonly ?string $timezone,
-        public readonly ?string $timezoneAbbreviation,
-        public readonly ?VariableBlock $hourly = null,
-        public readonly array $hourlyUnits = [],
-        public readonly ?VariableBlock $daily = null,
-        public readonly array $dailyUnits = [],
-        public readonly ?VariableBlock $current = null,
-        public readonly array $currentUnits = [],
-        public readonly ?VariableBlock $minutely15 = null,
-        public readonly array $minutely15Units = [],
+        public float $latitude,
+        public float $longitude,
+        public ?float $elevation,
+        public ?float $generationTimeMs,
+        public ?int $utcOffsetSeconds,
+        public ?string $timezone,
+        public ?string $timezoneAbbreviation,
+        public ?VariableBlock $hourly = null,
+        public array $hourlyUnits = [],
+        public ?VariableBlock $daily = null,
+        public array $dailyUnits = [],
+        public ?VariableBlock $current = null,
+        public array $currentUnits = [],
+        public ?VariableBlock $minutely15 = null,
+        public array $minutely15Units = [],
     ) {
     }
 

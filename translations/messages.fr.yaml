@@ -1,0 +1,11 @@
+homepage:
+    title: Météo imprimable
+    subtitle: Recherchez un lieu pour générer son bulletin météo.
+    submit: Voir la météo
+    search:
+        label: Lieu
+
+forecast:
+    title: Bulletin météo
+    coordinates: 'Coordonnées : %latitude%, %longitude%'
+    back: Retour à l'accueil

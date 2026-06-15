@@ -9,5 +9,5 @@ enum TemperatureUnit: string
     case CELSIUS = 'celsius';
     case FAHRENHEIT = 'fahrenheit';
 
-    public const DEFAULT = self::CELSIUS;
+    public const self DEFAULT = self::CELSIUS;
 }

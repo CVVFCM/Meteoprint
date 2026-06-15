@@ -1,0 +1,11 @@
+homepage:
+    title: Printable weather
+    subtitle: Search for a place to generate its weather report.
+    submit: View weather
+    search:
+        label: Place
+
+forecast:
+    title: Weather report
+    coordinates: 'Coordinates: %latitude%, %longitude%'
+    back: Back to home

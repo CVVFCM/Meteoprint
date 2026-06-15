@@ -9,5 +9,5 @@ enum TimeFormat: string
     case ISO8601 = 'iso8601';
     case UNIXTIME = 'unixtime';
 
-    public const DEFAULT = self::ISO8601;
+    public const self DEFAULT = self::ISO8601;
 }

@@ -11,15 +11,15 @@ namespace App\Bridge\OpenMeteo\Response;
  * Open-Meteo variable name. Values are stored raw: with timeformat=iso8601 times are
  * strings, with timeformat=unixtime they are integers.
  */
-final class VariableBlock
+final readonly class VariableBlock
 {
     /**
      * @param list<string|int>     $time
      * @param array<string, mixed> $values series keyed by variable name (current returns scalars, the rest return lists)
      */
     public function __construct(
-        private readonly array $time,
-        private readonly array $values,
+        private array $time,
+        private array $values,
     ) {
     }
 

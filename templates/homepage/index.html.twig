@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'homepage.title'|trans }}{% endblock %}
+
+{% block body %}
+    <main>
+        <h1>{{ 'homepage.title'|trans }}</h1>
+        <p>{{ 'homepage.subtitle'|trans }}</p>
+
+        {{ form_start(form) }}
+            {{ form_row(form.place) }}
+            <button type="submit">{{ 'homepage.submit'|trans }}</button>
+        {{ form_end(form) }}
+    </main>
+{% endblock %}

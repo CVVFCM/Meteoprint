@@ -11,5 +11,5 @@ enum WindSpeedUnit: string
     case MPH = 'mph';
     case KN = 'kn';
 
-    public const DEFAULT = self::KMH;
+    public const self DEFAULT = self::KMH;
 }

@@ -1,0 +1,4 @@
+homepage:
+    search:
+        required: Veuillez sélectionner un lieu.
+        invalid: Lieu invalide. Sélectionnez une suggestion dans la liste.

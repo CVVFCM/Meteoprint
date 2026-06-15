@@ -13,7 +13,6 @@ services:
             tls /app/.infra/docker/tls/cert.pem /app/.infra/docker/tls/cert.key
         }
       MERCURE_EXTRA_DIRECTIVES: anonymous
-    command: [ 'frankenphp', 'run', '--config', '/etc/caddy/Caddyfile', '--watch' ]
     volumes:
       - '.:/app:rw'
       - './.infra/docker/php/conf.d/symfony.dev.ini:/usr/local/etc/php/conf.d/symfony.ini:ro'
