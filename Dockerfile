@@ -5,7 +5,7 @@ ARG DEBIAN_VERSION=trixie
 FROM dunglas/frankenphp:${FRANKENPHP_VERSION}-php${PHP_VERSION}-${DEBIAN_VERSION} AS app
 
 
-LABEL org.opencontainers.image.source=https://github.com/CVVFCM/meteoprint
+LABEL org.opencontainers.image.source=https://github.com/cvvfcm/meteoprint
 LABEL org.opencontainers.image.licenses=GPL-3.0-or-later
 LABEL org.opencontainers.image.authors="Yohan Giarelli <yohan@giarel.li>"
 LABEL org.opencontainers.image.description="An application for generating pintable weather reports"

@@ -1,5 +1,5 @@
 x-base-php-config: &php
-  image: ${IMAGE_PREFIX:-ghcr.io/CVVFCM/meteoprint/}app:${DOCKER_TAG:-latest}
+  image: ${IMAGE_PREFIX:-ghcr.io/cvvfcm/meteoprint/}app:${DOCKER_TAG:-latest}
   restart: unless-stopped
   environment:
     SERVER_NAME: ${SERVER_NAME:-localhost}, php:80

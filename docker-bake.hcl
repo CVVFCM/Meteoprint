@@ -1,5 +1,5 @@
 variable "IMAGE_PREFIX" {
-    default = "ghcr.io/CVVFCM/meteoprint/"
+    default = "ghcr.io/cvvfcm/meteoprint/"
 }
 
 variable "TAGS" {
