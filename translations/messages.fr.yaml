@@ -4,6 +4,13 @@ homepage:
     submit: Voir la météo
     search:
         label: Lieu
+        group:
+            spots: Clubs FFVoile
+            places: Lieux
+
+spot:
+    type:
+        ffv_club: Club FFVoile
 
 forecast:
     title: Bulletin météo

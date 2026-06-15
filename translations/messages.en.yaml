@@ -4,6 +4,13 @@ homepage:
     submit: View weather
     search:
         label: Place
+        group:
+            spots: Sailing clubs
+            places: Places
+
+spot:
+    type:
+        ffv_club: FFVoile club
 
 forecast:
     title: Weather report

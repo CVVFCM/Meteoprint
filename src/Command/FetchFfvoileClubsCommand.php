@@ -4,8 +4,13 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\Entity\Spot;
+use App\Entity\SpotType;
 use App\Ffvoile\Club;
 use App\Ffvoile\FfvoileClubScraper;
+use App\Slug\SlugGenerator;
+use App\ValueObject\Geo;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -25,6 +30,8 @@ final class FetchFfvoileClubsCommand extends Command
 {
     public function __construct(
         private readonly FfvoileClubScraper $scraper,
+        private readonly SlugGenerator $slugGenerator,
+        private readonly EntityManagerInterface $em,
     ) {
         parent::__construct();
     }
@@ -33,7 +40,8 @@ final class FetchFfvoileClubsCommand extends Command
     {
         $this
             ->addOption('dept', null, InputOption::VALUE_REQUIRED, 'Restrict to a single department code (e.g. 08, 2A, 971)')
-            ->addOption('format', null, InputOption::VALUE_REQUIRED, 'Also write a file: json or csv', null);
+            ->addOption('format', null, InputOption::VALUE_REQUIRED, 'Also write a file: json or csv', null)
+            ->addOption('persist', null, InputOption::VALUE_NEGATABLE, 'Store imported clubs as Spots', true);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -69,6 +77,11 @@ final class FetchFfvoileClubsCommand extends Command
             ], $clubs),
         );
 
+        if (false !== $input->getOption('persist')) {
+            $this->persist($clubs);
+            $io->success(\sprintf('%d clubs imported as spots', \count($clubs)));
+        }
+
         $format = $input->getOption('format');
         if (\is_string($format)) {
             $path = $this->write($format, $clubs);
@@ -78,6 +91,40 @@ final class FetchFfvoileClubsCommand extends Command
         }
 
         return Command::SUCCESS;
+    }
+
+    /**
+     * Rebuilds the imported spots from scratch (clean refresh — no slug drift across runs),
+     * giving each club a collision-free slug via the doublon-aware generator.
+     *
+     * @param list<Club> $clubs
+     */
+    private function persist(array $clubs): void
+    {
+        $this->em->createQuery('DELETE FROM '.Spot::class.' s WHERE s.type = :type')
+            ->setParameter('type', SpotType::FFV_CLUB)
+            ->execute();
+
+        /** @var array<string, true> $used */
+        $used = [];
+
+        foreach ($clubs as $i => $club) {
+            $slug = $this->slugGenerator->generate($club->name, static fn (string $candidate): bool => isset($used[$candidate]));
+            $used[$slug] = true;
+
+            $this->em->persist(Spot::create(
+                $club->name,
+                $slug,
+                new Geo($club->latitude, $club->longitude),
+                SpotType::FFV_CLUB,
+            ));
+
+            if (0 === ($i + 1) % 200) {
+                $this->em->flush();
+            }
+        }
+
+        $this->em->flush();
     }
 
     /**

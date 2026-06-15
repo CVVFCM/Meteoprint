@@ -1,4 +1,4 @@
-name: CD
+name: Destroy infrastructure
 
 on:
     workflow_dispatch:

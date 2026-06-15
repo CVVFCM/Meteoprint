@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Ffvoile;
 
+use Symfony\Contracts\HttpClient\Exception\ExceptionInterface as HttpExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 /**
@@ -66,7 +67,7 @@ final readonly class FfvoileClubScraper
      */
     private function searchDepartment(string $code): ?array
     {
-        $data = $this->ffvoileClient->request('GET', '/map/search/dept_'.$code)->toArray(false);
+        $data = $this->get('GET', '/map/search/dept_'.$code);
 
         if (!isset($data['latitude'], $data['longitude'])) {
             return null;
@@ -112,7 +113,7 @@ final readonly class FfvoileClubScraper
             'IconHeight' => 41,
         ];
 
-        $response = $this->ffvoileClient->request('POST', '/map/clubs/filters', [
+        $response = $this->get('POST', '/map/clubs/filters', [
             'json' => [
                 'Latitude' => $center['lng'],
                 'Longitude' => $center['lat'],
@@ -122,7 +123,7 @@ final readonly class FfvoileClubScraper
                 'filtersOption' => json_encode($filtersOption, \JSON_THROW_ON_ERROR),
                 'clusterRequestOption' => json_encode($clusterRequestOption, \JSON_THROW_ON_ERROR),
             ],
-        ])->toArray(false);
+        ]);
 
         $ids = [];
         foreach ($response as $item) {
@@ -151,14 +152,14 @@ final readonly class FfvoileClubScraper
     {
         $clubs = [];
         foreach (array_chunk($ids, self::ID_BATCH) as $batch) {
-            $records = $this->ffvoileClient->request('POST', '/map/clubs/ids', [
+            $records = $this->get('POST', '/map/clubs/ids', [
                 'json' => [
                     'request' => [
                         'Center' => ['Latitude' => $center['lng'], 'Longitude' => $center['lat']],
                         'Ids' => $batch,
                     ],
                 ],
-            ])->toArray(false);
+            ]);
 
             foreach ($records as $record) {
                 if (!\is_array($record) || !isset($record['id'], $record['name'], $record['latitude'], $record['longitude'])) {
@@ -176,6 +177,23 @@ final readonly class FfvoileClubScraper
         }
 
         return $clubs;
+    }
+
+    /**
+     * Performs a request and decodes the JSON body, returning [] on any HTTP/transport/JSON
+     * error so a single failing department never aborts a full run.
+     *
+     * @param array<string, mixed> $options
+     *
+     * @return array<int|string, mixed>
+     */
+    private function get(string $method, string $url, array $options = []): array
+    {
+        try {
+            return $this->ffvoileClient->request($method, $url, $options)->toArray();
+        } catch (HttpExceptionInterface) {
+            return [];
+        }
     }
 
     private static function frToFloat(mixed $value): float
