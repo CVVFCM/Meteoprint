@@ -62,6 +62,8 @@ clean: ## Stop the containers and remove all the data
 cs: ## Fix code style
 	@docker run --rm -v $(PWD):/app -w /app ghcr.io/php-cs-fixer/php-cs-fixer:3-php8.5 fix
 	@$(DOCKER_COMPOSE) exec -T php ./vendor/bin/twig-cs-fixer fix
+	@npx eslint assets --fix
+	@npx stylelint "assets/**/*.css" --fix
 
 .PHONY: test
 test: vendor/

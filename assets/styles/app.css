@@ -127,14 +127,15 @@ body {
     display: inline-block;
 }
 
-@media (max-width: 40rem) {
+@media (width <= 40rem) {
     .forecast__grid {
         grid-template-columns: 1fr;
     }
 }
 
 @page {
-    size: A4 landscape;
+    size: a4 landscape;
+
     /* margin: 0 drops the browser-injected header/footer (url, date, page number). */
     margin: 0;
 }
