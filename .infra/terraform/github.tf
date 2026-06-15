@@ -15,6 +15,13 @@ resource "github_repository_environment" "deploy" {
   environment = "prod"
 }
 
+resource "github_actions_environment_secret" "image_prefix" {
+  repository  = "meteoprint"
+  environment = github_repository_environment.deploy.environment
+  secret_name = "IMAGE_PREFIX"
+  value       = "${scaleway_registry_namespace.docker_registry.endpoint}/meteoprint/"
+}
+
 resource "github_actions_environment_secret" "ssh_key" {
   repository  = "meteoprint"
   environment = github_repository_environment.deploy.environment
@@ -40,7 +47,7 @@ resource "github_actions_environment_secret" "database_url" {
   repository  = "meteoprint"
   environment = github_repository_environment.deploy.environment
   secret_name = "DATABASE_URL"
-  value       = neon_project.meteoprint.connection_uri
+  value       = scaleway_sdb_sql_database.database.endpoint
 }
 
 resource "github_actions_environment_secret" "app_secret" {
@@ -61,5 +68,5 @@ resource "github_actions_environment_variable" "server_name" {
   repository    = "meteoprint"
   environment   = github_repository_environment.deploy.environment
   variable_name = "SERVER_NAME"
-  value         = "meteoprint.giarel.li"
+  value         = "meteoprint.cvvfcm.fr"
 }
