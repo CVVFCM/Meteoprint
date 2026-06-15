@@ -81,6 +81,12 @@
             "bin/console doctrine:schema:create --no-interaction",
             "bin/console doctrine:fixtures:load --no-interaction"
         ],
+        "reset-test": [
+            "bin/console -etest doctrine:database:create --if-not-exists",
+            "bin/console -etest doctrine:schema:drop --force --full-database",
+            "bin/console -etest doctrine:schema:create --no-interaction",
+            "bin/console -etest doctrine:fixtures:load --no-interaction"
+        ],
         "phpstan": "phpstan analyse",
         "post-install-cmd": [
             "@auto-scripts"

@@ -22,7 +22,7 @@ reset: ## Reset (or create) the database
 
 .PHONY: reset-test
 reset-test: ## Reset (or create) the test database
-	@$(DOCKER_COMPOSE) exec -eAPP_ENV=test php composer reset
+	@$(DOCKER_COMPOSE) exec php composer reset-test
 
 .PHONY: cli
 cli: ## Open a CLI in the PHP container. If you need this it means that I fucked up this Makefile.
