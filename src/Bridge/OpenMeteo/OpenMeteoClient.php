@@ -37,6 +37,7 @@ final readonly class OpenMeteoClient
                 'query' => $request->toQuery(),
             ]);
 
+            /** @var array<string, mixed> $data */
             $data = $response->toArray(throw: false);
         } catch (TransportExceptionInterface $e) {
             throw new TransportException('Open-Meteo request failed: '.$e->getMessage(), 0, $e);

@@ -23,12 +23,29 @@ final class VariableBlock
     ) {
     }
 
+    /**
+     * @param array<array-key, mixed> $data
+     */
     public static function fromArray(array $data): self
     {
         $time = $data['time'] ?? [];
         unset($data['time']);
 
-        return new self(\is_array($time) ? array_values($time) : [$time], $data);
+        $axis = [];
+        foreach (\is_array($time) ? $time : [$time] as $point) {
+            if (\is_string($point) || \is_int($point)) {
+                $axis[] = $point;
+            }
+        }
+
+        $values = [];
+        foreach ($data as $name => $series) {
+            if (\is_string($name)) {
+                $values[$name] = $series;
+            }
+        }
+
+        return new self($axis, $values);
     }
 
     /**

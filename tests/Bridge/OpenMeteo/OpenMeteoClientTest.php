@@ -47,6 +47,7 @@ final class OpenMeteoClientTest extends TestCase
             (new ForecastRequest(48.85, 2.35))->hourly(HourlyVariable::TEMPERATURE_2M)
         );
 
+        self::assertNotNull($request);
         self::assertSame('GET', $request['method']);
         self::assertSame('https://api.open-meteo.com/v1/forecast?latitude=48.85&longitude=2.35&hourly=temperature_2m', $request['url']);
 
@@ -55,7 +56,7 @@ final class OpenMeteoClientTest extends TestCase
         self::assertSame(7200, $response->utcOffsetSeconds);
         self::assertNotNull($response->hourly);
         self::assertSame([12.3, 11.8], $response->hourly->get(HourlyVariable::TEMPERATURE_2M));
-        self::assertSame('°C', $response->hourlyUnits['temperature_2m']);
+        self::assertSame(['temperature_2m' => '°C'], $response->hourlyUnits);
     }
 
     public function testErrorBodyRaisesApiException(): void

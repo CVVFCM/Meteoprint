@@ -29,9 +29,13 @@ final class ForecastRequestTest extends TestCase
             ->current(CurrentVariable::WEATHER_CODE)
             ->toQuery();
 
-        self::assertSame('temperature_2m,precipitation', $query['hourly']);
-        self::assertSame('temperature_2m_max', $query['daily']);
-        self::assertSame('weather_code', $query['current']);
+        self::assertSame([
+            'latitude' => 48.85,
+            'longitude' => 2.35,
+            'hourly' => 'temperature_2m,precipitation',
+            'daily' => 'temperature_2m_max',
+            'current' => 'weather_code',
+        ], $query);
     }
 
     public function testEnumAndScalarOptionsAreMapped(): void
@@ -43,10 +47,14 @@ final class ForecastRequestTest extends TestCase
             ->forecastDays(3)
             ->toQuery();
 
-        self::assertSame('fahrenheit', $query['temperature_unit']);
-        self::assertSame('unixtime', $query['timeformat']);
-        self::assertSame('Europe/Paris', $query['timezone']);
-        self::assertSame(3, $query['forecast_days']);
+        self::assertSame([
+            'latitude' => 1.0,
+            'longitude' => 2.0,
+            'temperature_unit' => 'fahrenheit',
+            'timeformat' => 'unixtime',
+            'timezone' => 'Europe/Paris',
+            'forecast_days' => 3,
+        ], $query);
     }
 
     public function testUnsetOptionsAreOmitted(): void

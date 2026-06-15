@@ -60,35 +60,35 @@ final class ForecastRequest
 
     public function hourly(HourlyVariable ...$variables): self
     {
-        $this->hourly = $variables;
+        $this->hourly = array_values($variables);
 
         return $this;
     }
 
     public function daily(DailyVariable ...$variables): self
     {
-        $this->daily = $variables;
+        $this->daily = array_values($variables);
 
         return $this;
     }
 
     public function current(CurrentVariable ...$variables): self
     {
-        $this->current = $variables;
+        $this->current = array_values($variables);
 
         return $this;
     }
 
     public function minutely15(Minutely15Variable ...$variables): self
     {
-        $this->minutely15 = $variables;
+        $this->minutely15 = array_values($variables);
 
         return $this;
     }
 
     public function models(WeatherModel ...$models): self
     {
-        $this->models = $models;
+        $this->models = array_values($models);
 
         return $this;
     }
