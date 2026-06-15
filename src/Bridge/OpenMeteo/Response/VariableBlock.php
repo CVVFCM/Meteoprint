@@ -14,7 +14,7 @@ namespace App\Bridge\OpenMeteo\Response;
 final class VariableBlock
 {
     /**
-     * @param list<string|int>            $time
+     * @param list<string|int>     $time
      * @param array<string, mixed> $values series keyed by variable name (current returns scalars, the rest return lists)
      */
     public function __construct(

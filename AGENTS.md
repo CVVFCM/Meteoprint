@@ -61,10 +61,32 @@ App served at `https://localhost` (ports 80/443 configurable via `HTTP_PORT`/`HT
 ## Conventions
 
 - `services.yaml` uses autowire + autoconfigure; classes in `src/` are auto-registered.
-- Code style is enforced by php-cs-fixer + twig-cs-fixer (`make cs`) — run before committing.
 - `APP_ENV=dev` locally; container image builds `prod`.
+- Doctrine ORM 3 / DBAL: use attributes for entity mapping (no annotations).
+- **Exceptions**: every custom exception extends a native PHP exception
+  (`\RuntimeException`, `\InvalidArgumentException`, …) **and** implements
+  `App\Exception\ExceptionInterface`, so callers can catch any project error via
+  that interface.
+- **Third-party integrations** live under the `App\Bridge\` namespace
+  (e.g. the Open-Meteo SDK at `App\Bridge\OpenMeteo\`).
+
+## Linters — MANDATORY
+
+All produced code MUST pass every linter the CI runs (`.github/workflows/ci.yaml`).
+A change that fails any linter is not finished. Run the relevant ones via
+`docker compose exec php …` after every change and fix violations — never leave or
+baseline failures in project code. Authoritative list lives in `ci.yaml`; currently:
+
+- **PHPStan** (heavy: level max + bleedingEdge): `php vendor/bin/phpstan analyse`
+  (or `composer phpstan`)
+- **PHP CS Fixer**: `vendor/bin/php-cs-fixer fix --dry-run --diff`
+- **Twig CS Fixer**: `vendor/bin/twig-cs-fixer lint`
+- **PHPUnit** (full suite): `bin/phpunit`
+- `bin/console lint:container`, `lint:yaml config`, `lint:twig templates`,
+  `lint:translations --locale=fr`
+- **ESLint** (`npx eslint assets`), **StyleLint** (`npx stylelint assets/**/*.css`),
+  **hadolint** on the `Dockerfile`
 
 ## Notes
 
-- No test suite exists yet (`tests/` autoload namespace `App\Tests\` is declared but empty).
-- Doctrine ORM 3 / DBAL: use attributes for entity mapping (no annotations).
+- Tests live in `tests/` (PSR-4 `App\Tests\`), run with `bin/phpunit`.

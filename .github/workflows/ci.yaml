@@ -1,0 +1,170 @@
+name: CI
+
+on:
+    push:
+        branches:
+            - main
+    pull_request: ~
+    workflow_dispatch: ~
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+    cancel-in-progress: true
+
+jobs:
+    tests:
+        name: Tests
+        runs-on: ubuntu-latest
+        env:
+            EXTERNAL_USER_ID: 1001
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v6
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v4
+            - name: Build Docker images
+              uses: docker/bake-action@v7
+              with:
+                  pull: true
+                  load: true
+                  push: false
+                  files: |
+                      compose.yaml
+                      compose.override.yaml
+                  set: |
+                      php.cache-from=type=gha,scope=php-main
+                      php.cache-from=type=gha,scope=php-${{ github.ref_name }}
+                      php.cache-to=type=gha,scope=php-${{ github.ref_name }},mode=max
+            - name: Set up Docker Compose
+              uses: docker/setup-compose-action@v2
+              with:
+                  version: latest
+            - name: Install mkcert & Generate SSL certificates
+              run: |
+                  sudo apt-get install libnss3-tools
+                  wget -O mkcert https://dl.filippo.io/mkcert/latest?for=linux/amd64
+                  sudo mv mkcert /usr/local/bin/mkcert
+                  sudo chmod +x /usr/local/bin/mkcert
+                  mkcert -install
+                  mkdir -p .infra/frankenphp/tls
+                  mkcert -key-file .infra/frankenphp/tls/key.pem -cert-file .infra/frankenphp/tls/cert.pem localhost
+            - name: Cache Composer dependencies
+              uses: actions/cache@v5
+              with:
+                  path: vendor
+                  key: composer-${{ hashFiles('composer.lock') }}
+                  restore-keys: composer-
+            - name: Composer install
+              run: docker compose run --rm php composer install
+            - name: Start services
+              run: docker compose up --wait php --no-build || (docker compose logs && exit 1)
+            - name: Create test database
+              run: docker compose exec -T php composer reset-test
+            - name: Run PHPUnit
+              run: docker compose exec -T php bin/phpunit
+            - name: Doctrine Schema Validator
+              run: docker compose exec -T php bin/console -e test doctrine:schema:validate
+
+    phpstan:
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            security-events: write
+            actions: write
+        env:
+            APP_ENV: dev
+        name: Static Analysis
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v6
+
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '8.5'
+                  extensions: intl, pdo_pgsql
+
+            - name: Composer install
+              run: composer install
+
+            - name: PHPStan
+              run: php ./vendor/bin/phpstan analyse --memory-limit=512M
+
+    lint:
+        runs-on: ubuntu-latest
+        name: Lint
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v6
+
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '8.5'
+                  extensions: intl, pdo_pgsql
+
+            - name: Composer install
+              run: composer install
+
+            - name: Twig Lint
+              run: php bin/console lint:twig --format=github templates
+
+            - name: Container Lint
+              run: php bin/console lint:container
+
+            - name: YAML Lint
+              run: find config -name "*.yaml" | xargs php bin/console lint:yaml --format=github
+
+            - name: Translations Lint
+              run: php bin/console lint:translations --locale=fr
+
+            - name: Lint Dockerfile
+              uses: hadolint/hadolint-action@v3.3.0
+
+    cs:
+        runs-on: ubuntu-latest
+        name: Code Style
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v6
+
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '8.5'
+                  extensions: intl, pdo_pgsql
+
+            - name: Composer install
+              run: composer install
+
+            - name: PHP CS Fixer
+              run: ./vendor/bin/php-cs-fixer fix --dry-run --diff --ansi
+
+            - name: Twig CS Fixer
+              run: ./vendor/bin/twig-cs-fixer lint --report=github
+
+    eslint:
+        runs-on: ubuntu-latest
+        name: ESLint
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v6
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: ESLint
+              run: npx eslint assets
+
+    stylelint:
+        runs-on: ubuntu-latest
+        name: StyleLint
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v6
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: StyleLint
+              run: npx stylelint assets/**/*.css
