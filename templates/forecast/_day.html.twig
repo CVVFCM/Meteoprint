@@ -1,0 +1,32 @@
+<section class="day" id="forecast-day-{{ day|date('Ymd') }}">
+    <h2 class="day__title">
+        {{ label|trans }}
+        {# Explicit locale: this partial is also rendered by the worker (no request context). #}
+        <span class="day__date">{{ day|format_date(pattern: 'EEEE d MMMM', locale: 'fr') }}</span>
+    </h2>
+
+    {% if forecast is null %}
+        <p class="day__loading" aria-live="polite" aria-busy="true">{{ 'forecast.loading'|trans }}</p>
+    {% else %}
+        <ul class="slots">
+            {% for slot in forecast.slots %}
+                <li class="slot">
+                    <span class="slot__when">{{ ('forecast.slot.' ~ slot.hour)|trans }}</span>
+                    <span class="slot__icon" title="{{ slot.weatherCode|weather_label|trans }}">{{ slot.weatherCode|weather_icon }}</span>
+                    <span class="slot__temp">{{ slot.temperature|round }}&nbsp;°C</span>
+                    <span class="slot__wind">
+                        {# wind_direction_10m is the bearing the wind blows FROM #}
+                        <span class="slot__wind-dir">
+                            {{ slot.windDirection }}°
+                            <span class="slot__arrow" style="transform: rotate({{ slot.windDirection }}deg)" aria-hidden="true">↓</span>
+                        </span>
+                        <span class="slot__wind-speed">
+                            {{ slot.windSpeed|round }}&nbsp;{{ 'forecast.knots'|trans }}
+                            <span class="slot__gust">{{ 'forecast.gusts'|trans }}&nbsp;{{ slot.windGust|round }}&nbsp;{{ 'forecast.knots'|trans }}</span>
+                        </span>
+                    </span>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</section>

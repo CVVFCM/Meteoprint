@@ -1,0 +1,5 @@
+<turbo-stream action="replace" target="forecast-day-{{ day|date('Ymd') }}">
+    <template>
+        {{ include('forecast/_day.html.twig', {day: day, forecast: forecast, label: label}) }}
+    </template>
+</turbo-stream>
