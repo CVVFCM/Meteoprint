@@ -35,7 +35,7 @@ runcmd:
     - tailscale up --auth-key=${tailscale_key} --ssh
 
 users:
-  - name: debian
+  - name: ${ssh_user}
     ssh_authorized_keys:
       - ${deploy_public_key}
       - ${github_keys}

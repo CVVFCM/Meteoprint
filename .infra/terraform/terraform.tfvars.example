@@ -1,0 +1,18 @@
+# Global overrides (all optional — defaults reproduce the current meteoprint infra).
+# scaleway_organization_id = "8258be04-f116-4f9a-a052-25b519c929b4"
+# scaleway_region          = "fr-par"
+# scaleway_zone            = "fr-par-1"
+# github_owner             = "CVVFCM"
+# github_username          = "yohang"
+# tailscale_tailnet        = "-"
+
+# Per-deployment values live on the `module "..."` blocks in main.tf, e.g.:
+#
+# module "meteoprint_staging" {
+#   source             = "./modules/deployment"
+#   github_ssh_keys    = data.github_user.me.ssh_keys
+#   name               = "meteoprint-staging"
+#   server_name        = "staging.meteoprint.cvvfcm.fr"
+#   cloudflare_zone_id = "3fa2035c4239d02756471c8a0f51f247"
+#   instance_type      = "STARDUST1-S"
+# }
