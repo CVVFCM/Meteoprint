@@ -9,11 +9,12 @@ concurrency:
 
 jobs:
     destroy-prod:
-        name: Provision PROD
+        name: Destroy PROD
         runs-on: ubuntu-latest
         permissions:
             contents: read
             id-token: write
+        environment: PROD
         env:
             AWS_ACCESS_KEY_ID: ${{ secrets.SCW_ACCESS_KEY }}
             AWS_SECRET_ACCESS_KEY: ${{ secrets.SCW_SECRET_KEY }}

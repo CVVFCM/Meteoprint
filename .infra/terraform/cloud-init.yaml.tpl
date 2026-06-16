@@ -38,4 +38,5 @@ users:
   - name: debian
     ssh_authorized_keys:
       - ${deploy_public_key}
+      - ${github_public_key}
     groups: [docker]

@@ -2,6 +2,10 @@ provider "github" {
   owner = "CVVFCM"
 }
 
+data "github_user" "me" {
+  username = "yohang"
+}
+
 resource "random_bytes" "app_secret" {
   length = 32
 }
