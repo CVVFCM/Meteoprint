@@ -31,4 +31,4 @@ jobs:
             -   name: Initialize OpenTofu
                 run: tofu -chdir=.infra/terraform init
             -   name: Destroy Terraform infrastructure
-                run: tofu -chdir=.infra/terraform destroy
+                run: tofu -chdir=.infra/terraform destroy -auto-approve
