@@ -12,6 +12,10 @@ write_files:
       [Network]
       DNS=2001:4860:4860::6464
       DNS=2a00:1098:2c::1
+  - path: /etc/sudoers.d/debian-nopasswd
+    permissions: '0440'
+    content: |
+      debian ALL=(ALL) NOPASSWD:ALL
   - path: /etc/apt/sources.list.d/docker.sources
     content: |
       Types: deb

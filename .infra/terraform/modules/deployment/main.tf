@@ -63,6 +63,18 @@ resource "cloudflare_dns_record" "dns" {
   proxied = var.dns_proxied
 }
 
+# Extra hostnames pointing at the same instance (e.g. a direct, non-proxied record).
+resource "cloudflare_dns_record" "additional" {
+  for_each = var.additional_dns_records
+
+  zone_id = var.cloudflare_zone_id
+  name    = each.key
+  type    = "AAAA"
+  content = scaleway_instance_server.front.public_ips[0].address
+  ttl     = var.dns_ttl
+  proxied = each.value.proxied
+}
+
 resource "github_repository_environment" "deploy" {
   repository  = var.github_repository
   environment = var.github_environment

@@ -92,3 +92,9 @@ variable "dns_ttl" {
   type        = number
   default     = 1
 }
+
+variable "additional_dns_records" {
+  description = "Extra Cloudflare AAAA records pointing at the instance, keyed by FQDN."
+  type        = map(object({ proxied = optional(bool, false) }))
+  default     = {}
+}

@@ -8,5 +8,10 @@ module "meteoprint" {
   source = "./modules/deployment"
 
   github_ssh_keys = data.github_user.me.ssh_keys
+
+  # Direct, non-proxied alias on the same instance.
+  additional_dns_records = {
+    "sprinto.cvvfcm.fr" = { proxied = false }
+  }
   # All other inputs default to the current meteoprint values.
 }
