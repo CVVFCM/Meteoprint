@@ -41,12 +41,7 @@ moved {
   to   = module.meteoprint.cloudflare_dns_record.dns
 }
 
-# Older names for the primary/direct records (no-op if absent from state).
-moved {
-  from = cloudflare_dns_record.public_dns
-  to   = module.meteoprint.cloudflare_dns_record.dns
-}
-
+# Old direct (non-proxied) record name (no-op if absent from state).
 moved {
   from = cloudflare_dns_record.direct_dns
   to   = module.meteoprint.cloudflare_dns_record.additional["sprinto.cvvfcm.fr"]
