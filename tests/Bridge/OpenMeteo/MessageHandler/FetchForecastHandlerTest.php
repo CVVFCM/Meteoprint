@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\MessageHandler;
+namespace App\Tests\Bridge\OpenMeteo\MessageHandler;
 
+use App\Bridge\OpenMeteo\Message\FetchForecast;
+use App\Bridge\OpenMeteo\MessageHandler\FetchForecastHandler;
 use App\Bridge\OpenMeteo\OpenMeteoClient;
 use App\Entity\Forecast;
-use App\Message\FetchForecast;
-use App\MessageHandler\FetchForecastHandler;
 use App\Repository\ForecastRepository;
 use App\ValueObject\ForecastSlot;
 use App\ValueObject\Geo;

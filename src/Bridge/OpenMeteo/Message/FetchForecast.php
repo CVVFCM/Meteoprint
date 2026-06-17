@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Message;
+namespace App\Bridge\OpenMeteo\Message;
 
 use App\ValueObject\Geo;
 

@@ -81,14 +81,14 @@
         "reset": [
             "bin/console doctrine:database:create --if-not-exists",
             "bin/console doctrine:schema:drop --force --full-database",
-            "bin/console doctrine:schema:create --no-interaction",
-            "bin/console doctrine:fixtures:load --no-interaction"
+            "bin/console doctrine:migrations:migrate --no-interaction",
+            "bin/console doctrine:fixtures:load --no-interaction --append"
         ],
         "reset-test": [
             "bin/console -etest doctrine:database:create --if-not-exists",
             "bin/console -etest doctrine:schema:drop --force --full-database",
-            "bin/console -etest doctrine:schema:create --no-interaction",
-            "bin/console -etest doctrine:fixtures:load --no-interaction"
+            "bin/console -etest doctrine:migrations:migrate --no-interaction",
+            "bin/console -etest doctrine:fixtures:load --no-interaction --append"
         ],
         "phpstan": "phpstan analyse",
         "post-install-cmd": [

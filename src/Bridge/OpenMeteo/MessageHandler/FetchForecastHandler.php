@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace App\MessageHandler;
+namespace App\Bridge\OpenMeteo\MessageHandler;
 
 use App\Bridge\OpenMeteo\Enum\HourlyVariable;
 use App\Bridge\OpenMeteo\Enum\TimeFormat;
 use App\Bridge\OpenMeteo\Enum\WeatherModel;
 use App\Bridge\OpenMeteo\Enum\WindSpeedUnit;
+use App\Bridge\OpenMeteo\Message\FetchForecast;
 use App\Bridge\OpenMeteo\OpenMeteoClient;
 use App\Bridge\OpenMeteo\Request\ForecastRequest;
-use App\Entity\Forecast;
+use App\Entity\Forecast as ForecastEntity;
 use App\Forecast\ForecastChannel;
-use App\Message\FetchForecast;
 use App\Repository\ForecastRepository;
 use App\ValueObject\ForecastSlot;
 use Symfony\Component\Clock\ClockInterface;
@@ -101,7 +101,7 @@ final readonly class FetchForecastHandler
         $forecast = $this->repository->findOneForDay($position, $day);
 
         if (null === $forecast) {
-            $forecast = Forecast::create($position, $day, $slots, $now);
+            $forecast = ForecastEntity::create($position, $day, $slots, $now);
         } else {
             $forecast->refresh($slots, $now);
         }

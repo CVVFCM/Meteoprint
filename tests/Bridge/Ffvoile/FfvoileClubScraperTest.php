@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Ffvoile;
+namespace App\Tests\Bridge\Ffvoile;
 
-use App\Ffvoile\FfvoileClubScraper;
+use App\Bridge\Ffvoile\FfvoileClubScraper;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpClient\MockHttpClient;
 use Symfony\Component\HttpClient\Response\MockResponse;

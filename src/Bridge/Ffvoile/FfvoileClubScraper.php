@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Ffvoile;
+namespace App\Bridge\Ffvoile;
 
 use Symfony\Contracts\HttpClient\Exception\ExceptionInterface as HttpExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;

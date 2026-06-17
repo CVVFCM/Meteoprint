@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Bridge\OpenMeteo\Message\FetchForecast;
 use App\Entity\Forecast;
 use App\Forecast\ForecastChannel;
-use App\Message\FetchForecast;
 use App\Repository\ForecastRepository;
 use App\ValueObject\Geo;
 use Symfony\Component\Clock\ClockInterface;

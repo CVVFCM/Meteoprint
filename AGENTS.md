@@ -4,12 +4,9 @@ Guidance for working in this repository.
 
 ## What this is
 
-**meteoprint** — a Symfony 8.1 app for generating printable weather reports
-(GPL-3.0-or-later, author Yohan Giarelli). Early-stage skeleton: framework and
-infrastructure are wired up, but `src/` has no entities, controllers, or
-business logic yet (only an empty `AppFixtures`).
+**meteoprint** — a Symfony 8.1 app for generating printable weather reports.
 
-### Planned scope
+### Scope
 
 A simple weather website — **no map, no complex features**. Core goal: generate
 a **highly readable, printable summary** of today's and tomorrow's weather.
@@ -21,10 +18,28 @@ a **highly readable, printable summary** of today's and tomorrow's weather.
 - **Frontend**: AssetMapper + importmap only (no Node/bundler). Keep it light;
   the print stylesheet is a first-class concern.
 
+## Architecture — Light DDD
+
+Bridge pattern for third-party integrations. Each external service lives under `src/Bridge/`:
+
+- **`src/Bridge/Ffvoile/`** — French Sailing Federation integration
+- **`src/Bridge/OpenMeteo/`** — Weather data integration
+
+**Layer separation:**
+- **Bridge** — external service adapters (SDK, provider-specific types)
+- **Entity** — domain model (core business entities)
+- **Message/MessageHandler** — application layer (CQRS commands)
+- **Controller** — presentation layer (HTTP handlers)
+- **Command** — CLI entry points (orchestration, stays in Bridge subnamespace)
+
+**ValueObjects:**
+- Provider-specific VOs live in their Bridge (`FFVClubId` → `Bridge/Ffvoile/`)
+- Shared VOs stay in `src/ValueObject/` (`Geo`, `ForecastSlot`)
+
 ## Stack
 
-- **PHP 8.4+** (runtime container uses PHP 8.5), Symfony 8.1.*
-- **Doctrine ORM 3** + migrations + fixtures (dev/test), **PostgreSQL 16**
+- **PHP 8.5+**, Symfony 8.1.*
+- **Doctrine ORM 3** + migrations + fixtures (dev/test), **PostgreSQL 18**
 - **FrankenPHP** (Caddy) as the runtime — see `Dockerfile`, `.infra/docker/php/Caddyfile`
 - **Mercure** for real-time updates, **Messenger** (sync transport + scheduler)
 - **AssetMapper** + importmap for frontend (`assets/`, `importmap.php`); no Node build
@@ -32,15 +47,17 @@ a **highly readable, printable summary** of today's and tomorrow's weather.
 
 ## Running (Docker, via Makefile)
 
-Everything runs in containers; the `Makefile` wraps `docker compose`.
+**Use Makefile, not direct `docker compose` commands** (except `docker compose logs`).
 
 ```bash
-make run        # first run: TLS cert + pull + build + up + DB reset + assets. Then just starts containers
-make up         # start containers only
-make reset      # reset/create the database (runs `composer reset` in php container)
-make cli        # bash shell in the php container
-make cs         # fix code style (php-cs-fixer + twig-cs-fixer)
-make clean      # stop containers, remove all data/volumes/vendor
+make run          # First run: TLS + pull + build + up + DB reset + assets. Then just starts containers
+make up           # Start containers only
+make reset        # Reset/create the database
+make cli          # Bash shell in the php container
+make test         # Run PHPUnit tests
+make reset-test   # Reset test DB + run tests
+make cs           # Fix code style (php-cs-fixer + twig-cs-fixer)
+make clean        # Stop containers, remove all data/volumes/vendor
 ```
 
 Run `bin/console` and `composer` **inside the php container** (`make cli`, or
@@ -103,17 +120,15 @@ App served at `https://localhost` (ports 80/443 configurable via `HTTP_PORT`/`HT
 ## Linters — MANDATORY
 
 All produced code MUST pass every linter the CI runs (`.github/workflows/ci.yaml`).
-A change that fails any linter is not finished. Run the relevant ones via
-`docker compose exec php …` after every change and fix violations — never leave or
-baseline failures in project code. Authoritative list lives in `ci.yaml`; currently:
+A change that fails any linter is not finished. Run via Makefile after every change
+and fix violations — never leave or baseline failures in project code.
+Authoritative list lives in `ci.yaml`; currently:
 
-- **PHPStan** (heavy: level max + bleedingEdge): `php vendor/bin/phpstan analyse`
-  (or `composer phpstan`)
-- **PHP CS Fixer**: `vendor/bin/php-cs-fixer fix --dry-run --diff`
-- **Twig CS Fixer**: `vendor/bin/twig-cs-fixer lint`
-- **PHPUnit** (full suite): `bin/phpunit`
-- `bin/console lint:container`, `lint:yaml config`, `lint:twig templates`,
-  `lint:translations --locale=fr`
+- **PHPStan** (heavy: level max + bleedingEdge): `make stan`
+- **PHP CS Fixer**: `make cs`
+- **Twig CS Fixer**: `make cs`
+- **PHPUnit**: `make test` (`make reset-test` before. Once is enough)
+- Container/YAML/Twig/Translations: `make cli` then `bin/console lint:*`
 - **ESLint** (`npx eslint assets`), **StyleLint** (`npx stylelint assets/**/*.css`),
   **hadolint** on the `Dockerfile`
 

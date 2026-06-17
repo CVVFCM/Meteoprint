@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Ffvoile;
+namespace App\Bridge\Ffvoile;
 
 /**
  * A sailing club harvested from the FFVoile club map.

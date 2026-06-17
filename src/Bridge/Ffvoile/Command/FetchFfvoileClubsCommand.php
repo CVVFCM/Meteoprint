@@ -2,12 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Command;
+namespace App\Bridge\Ffvoile\Command;
 
+use App\Bridge\Ffvoile\Club;
+use App\Bridge\Ffvoile\FFVClubId;
+use App\Bridge\Ffvoile\FfvoileClubScraper;
 use App\Entity\Spot;
 use App\Entity\SpotType;
-use App\Ffvoile\Club;
-use App\Ffvoile\FfvoileClubScraper;
 use App\Slug\SlugGenerator;
 use App\ValueObject\Geo;
 use Doctrine\ORM\EntityManagerInterface;
@@ -94,30 +95,48 @@ final class FetchFfvoileClubsCommand extends Command
     }
 
     /**
-     * Rebuilds the imported spots from scratch (clean refresh — no slug drift across runs),
-     * giving each club a collision-free slug via the doublon-aware generator.
+     * Upserts spots from FFVoile clubs (idempotent — safe to run multiple times).
+     * Existing spots are updated in-place; new ones are created with collision-free slugs.
      *
      * @param list<Club> $clubs
      */
     private function persist(array $clubs): void
     {
-        $this->em->createQuery('DELETE FROM '.Spot::class.' s WHERE s.type = :type')
-            ->setParameter('type', SpotType::FFV_CLUB)
-            ->execute();
+        /** @var array<string, true> $existingSlugs */
+        $existingSlugs = $this->fetchAllFfvoileSlugs();
 
         /** @var array<string, true> $used */
         $used = [];
 
         foreach ($clubs as $i => $club) {
-            $slug = $this->slugGenerator->generate($club->name, static fn (string $candidate): bool => isset($used[$candidate]));
-            $used[$slug] = true;
+            $existing = $this->em->getRepository(Spot::class)->findOneBy([
+                'ffvClubId' => new FFVClubId($club->id),
+            ]);
 
-            $this->em->persist(Spot::create(
-                $club->name,
-                $slug,
-                new Geo($club->latitude, $club->longitude),
-                SpotType::FFV_CLUB,
-            ));
+            if (null !== $existing) {
+                unset($existingSlugs[$existing->slug]);
+
+                $newSlug = $this->slugGenerator->generate(
+                    $club->name,
+                    fn (string $candidate): bool => isset($used[$candidate]) || isset($existingSlugs[$candidate]),
+                );
+                $used[$newSlug] = true;
+                $existing->update($club->name, new Geo($club->latitude, $club->longitude), $newSlug);
+            } else {
+                $slug = $this->slugGenerator->generate(
+                    $club->name,
+                    fn (string $candidate): bool => isset($used[$candidate]) || isset($existingSlugs[$candidate]),
+                );
+                $used[$slug] = true;
+
+                $this->em->persist(Spot::create(
+                    $club->name,
+                    $slug,
+                    new Geo($club->latitude, $club->longitude),
+                    SpotType::FFV_CLUB,
+                    new FFVClubId($club->id),
+                ));
+            }
 
             if (0 === ($i + 1) % 200) {
                 $this->em->flush();
@@ -125,6 +144,31 @@ final class FetchFfvoileClubsCommand extends Command
         }
 
         $this->em->flush();
+    }
+
+    /**
+     * Fetches all existing FFVoile club slugs from the database.
+     *
+     * @return array<string, true>
+     */
+    private function fetchAllFfvoileSlugs(): array
+    {
+        $qb = $this->em->createQueryBuilder();
+        $qb->select('s.slug')
+            ->from(Spot::class, 's')
+            ->where('s.type = :type')
+            ->setParameter('type', SpotType::FFV_CLUB);
+
+        /** @var list<array{slug: string}> $result */
+        $result = $qb->getQuery()->getArrayResult();
+
+        /** @var array<string, true> $slugs */
+        $slugs = [];
+        foreach ($result as ['slug' => $slug]) {
+            $slugs[$slug] = true;
+        }
+
+        return $slugs;
     }
 
     /**

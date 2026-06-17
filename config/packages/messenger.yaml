@@ -4,14 +4,12 @@ framework:
         # failure_transport: failed
 
         transports:
-            # https://symfony.com/doc/current/messenger.html#transport-configuration
-            async: '%env(MESSENGER_TRANSPORT_DSN)%'
-            # failed: 'doctrine://default?queue_name=failed'
+            async:
+                dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
             sync: 'sync://'
 
         routing:
-            # Route your messages to the transports
-            App\Message\FetchForecast: async
+            App\Bridge\OpenMeteo\Message\FetchForecast: async
 
 when@test:
     framework:

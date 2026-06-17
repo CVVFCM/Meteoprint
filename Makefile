@@ -34,7 +34,7 @@ vendor/: ## Uh ?
 .PHONY: up
 up: ## Just turn-on the containers
 	@mkdir -p var/data
-	@$(DOCKER_COMPOSE) up -d
+	@$(DOCKER_COMPOSE) up -d --remove-orphans --wait php --wait consumer
 
 .configured:
 	test -f .configured || make first_run
