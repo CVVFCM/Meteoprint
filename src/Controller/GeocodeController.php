@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\PlaceSearch\PlaceSelection;
 use App\Repository\SpotRepository;
 use Geocoder\Exception\Exception as GeocoderException;
 use Geocoder\Location;
@@ -19,8 +20,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  *
  * Returns the grouped shape UX Autocomplete expects:
  * `{ "results": { "options": [ { value, text, group_by } ], "optgroups": [ { value, label } ] } }`.
- * Saved spots are listed first, then geocoded places. `value` is the `"latitude,longitude"`
- * consumed by {@see HomepageController}.
+ * Saved spots are listed first, then geocoded places. `value` is either a `spot:{slug}` token
+ * for saved spots or a `"latitude,longitude"` pair for plain geocoded places.
  */
 final readonly class GeocodeController
 {
@@ -76,7 +77,7 @@ final readonly class GeocodeController
         $options = [];
         foreach ($this->spots->search($query) as $spot) {
             $options[] = [
-                'value' => \sprintf('%.2f,%.2f', $spot->position->latitude, $spot->position->longitude),
+                'value' => PlaceSelection::forSpot($spot->slug),
                 'text' => $spot->name,
                 'group_by' => [$group],
             ];

@@ -51,7 +51,7 @@ final class GeocodeControllerTest extends WebTestCase
         $data = $this->decode($client->getResponse()->getContent());
 
         self::assertSame([
-            ['value' => '48.85,2.35', 'text' => 'Paris Voile', 'group_by' => ['Clubs FFVoile']],
+            ['value' => 'spot:paris-voile', 'text' => 'Paris Voile', 'group_by' => ['Clubs FFVoile']],
             ['value' => '48.86,2.35', 'text' => 'Paris, Île-de-France, France', 'group_by' => ['Lieux']],
         ], $data['results']['options']);
         self::assertSame([

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Form\PlaceSearchType;
+use App\PlaceSearch\PlaceSelection;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,13 +34,22 @@ final readonly class HomepageController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $value = $form->get('place')->getData();
-            // Guaranteed "lat,lon" by PlaceSearchType's Regex constraint.
-            $parts = explode(',', \is_string($value) ? $value : '', 2);
+            if (!\is_string($value)) {
+                throw new \LogicException('The place search form must submit a string value.');
+            }
+
+            if (PlaceSelection::isSpot($value)) {
+                return new RedirectResponse($this->urlGenerator->generate('forecast_spot', [
+                    'slug' => PlaceSelection::spotSlug($value),
+                ]));
+            }
+
+            $coordinates = PlaceSelection::coordinates($value);
 
             // Arome HD resolution is ~1.5 km → 2 decimals is enough and keeps the URL tidy.
             return new RedirectResponse($this->urlGenerator->generate('forecast', [
-                'latitude' => round((float) $parts[0], 2),
-                'longitude' => round((float) ($parts[1] ?? 0), 2),
+                'latitude' => round($coordinates['latitude'], 2),
+                'longitude' => round($coordinates['longitude'], 2),
             ]));
         }
 

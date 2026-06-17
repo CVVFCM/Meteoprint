@@ -6,6 +6,8 @@ namespace App\Tests\Controller;
 
 use App\Bridge\OpenMeteo\Message\FetchForecast;
 use App\Entity\Forecast;
+use App\Entity\Spot;
+use App\Entity\SpotType;
 use App\ValueObject\ForecastSlot;
 use App\ValueObject\Geo;
 use Doctrine\ORM\EntityManagerInterface;
@@ -79,6 +81,49 @@ final class ForecastControllerTest extends WebTestCase
         $transport = static::getContainer()->get('messenger.transport.async');
         self::assertInstanceOf(InMemoryTransport::class, $transport);
         self::assertCount(0, $transport->getSent());
+    }
+
+    public function testSlugRouteRendersSpotNameAndReusesRoundedForecastCoordinates(): void
+    {
+        $client = static::createClient();
+        $hub = new TestHub('forecast-cursor-1');
+        static::getContainer()->set(HubInterface::class, $hub);
+
+        $em = static::getContainer()->get(EntityManagerInterface::class);
+        $em->createQuery('DELETE FROM '.Forecast::class)->execute();
+        $em->createQuery('DELETE FROM '.Spot::class)->execute();
+
+        $repository = static::getContainer()->get(\App\Repository\ForecastRepository::class);
+        $position = new Geo(48.86, 2.35);
+        $generatedAt = new \DateTimeImmutable('now');
+        $repository->save(Forecast::create($position, new \DateTimeImmutable('today'), $this->slots(), $generatedAt));
+        $repository->save(Forecast::create($position, new \DateTimeImmutable('tomorrow'), $this->slots(), $generatedAt));
+
+        $em->persist(Spot::create('Paris Voile', 'paris-voile', new Geo(48.8566, 2.3522), SpotType::FFV_CLUB));
+        $em->flush();
+
+        $crawler = $client->request('GET', '/forecast/paris-voile');
+
+        self::assertResponseIsSuccessful();
+        self::assertSame('Paris Voile', trim($crawler->filter('.forecast__spot')->text()));
+        self::assertSame(
+            'https://localhost/.well-known/mercure?topic=forecast%2F48.86%2F2.35',
+            (string) $crawler->filter('turbo-mercure-stream-source')->attr('src'),
+        );
+        self::assertCount(0, $crawler->filter('.day__loading'));
+        self::assertCount(0, $hub->updates);
+
+        $transport = static::getContainer()->get('messenger.transport.async');
+        self::assertInstanceOf(InMemoryTransport::class, $transport);
+        self::assertCount(0, $transport->getSent());
+    }
+
+    public function testUnknownSpotSlugIsRejected(): void
+    {
+        $client = static::createClient();
+        $client->request('GET', '/forecast/unknown-spot');
+
+        self::assertResponseStatusCodeSame(404);
     }
 
     public function testNonNumericCoordinatesAreRejected(): void

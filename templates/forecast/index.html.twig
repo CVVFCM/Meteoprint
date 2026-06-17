@@ -8,6 +8,9 @@
     <main class="forecast">
         <header class="forecast__head">
             <h1>{{ 'forecast.title'|trans }}</h1>
+            {% if spot is not null %}
+                <p class="forecast__spot">{{ spot.name }}</p>
+            {% endif %}
             <p class="forecast__coords">{{ 'forecast.coordinates'|trans({'%latitude%': position.latitude, '%longitude%': position.longitude}) }}</p>
             <a class="forecast__back" href="{{ path('homepage') }}">{{ 'forecast.back'|trans }}</a>
         </header>

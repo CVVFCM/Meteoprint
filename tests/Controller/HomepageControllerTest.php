@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller;
 
+use App\Entity\Spot;
+use App\Entity\SpotType;
+use App\ValueObject\Geo;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 final class HomepageControllerTest extends WebTestCase
@@ -25,6 +29,20 @@ final class HomepageControllerTest extends WebTestCase
 
         // Coordinates are rounded to 2 decimals (Arome HD resolution).
         self::assertResponseRedirects('/forecast/48.85/2.35');
+    }
+
+    public function testSpotSelectionRedirectsToCanonicalSlugForecast(): void
+    {
+        $client = static::createClient();
+
+        $em = static::getContainer()->get(EntityManagerInterface::class);
+        $em->createQuery('DELETE FROM '.Spot::class)->execute();
+        $em->persist(Spot::create('Paris Voile', 'paris-voile', new Geo(48.85, 2.35), SpotType::FFV_CLUB));
+        $em->flush();
+
+        $client->request('GET', '/', ['place_search' => ['place' => 'spot:paris-voile']]);
+
+        self::assertResponseRedirects('/forecast/paris-voile');
     }
 
     public function testInvalidSelectionDoesNotRedirect(): void

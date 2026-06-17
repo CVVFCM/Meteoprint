@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Form;
 
+use App\PlaceSearch\PlaceSelection;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -16,19 +17,13 @@ use Symfony\Component\Validator\Constraints\Regex;
 /**
  * Single-field form: a place search rendered as a remote UX Autocomplete.
  *
- * Options are fed by the `geocode_search` endpoint; each option's value is the
- * `"latitude,longitude"` of the geocoded place, so the submitted data is ready to be
- * turned into forecast route parameters.
+ * Options are fed by the `geocode_search` endpoint; each option's value is either a saved
+ * `spot:{slug}` token or a `"latitude,longitude"` pair for a plain geocoded place.
  *
  * @extends AbstractType<array{place?: string|null}>
  */
 final class PlaceSearchType extends AbstractType
 {
-    /**
-     * Matches the `"lat,lon"` value produced by the geocode endpoint.
-     */
-    public const string LAT_LON_PATTERN = '/^-?\d+(?:\.\d+)?,-?\d+(?:\.\d+)?$/';
-
     public function __construct(
         private readonly UrlGeneratorInterface $urlGenerator,
     ) {
@@ -40,8 +35,8 @@ final class PlaceSearchType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         // TextType (not ChoiceType) keeps this simple: the UX Autocomplete extension renders the
-        // remote TomSelect widget and the submitted value is the raw "lat,lon" string — no choice
-        // list, so no custom choice loader is needed.
+        // remote TomSelect widget and the submitted value is the raw spot/coordinate token — no
+        // choice list, so no custom choice loader is needed.
         $builder->add('place', TextType::class, [
             'label' => 'homepage.search.label',
             'autocomplete' => true,
@@ -52,7 +47,7 @@ final class PlaceSearchType extends AbstractType
             ],
             'constraints' => [
                 new NotBlank(message: 'homepage.search.required'),
-                new Regex(pattern: self::LAT_LON_PATTERN, message: 'homepage.search.invalid'),
+                new Regex(pattern: PlaceSelection::VALUE_PATTERN, message: 'homepage.search.invalid'),
             ],
         ]);
     }
