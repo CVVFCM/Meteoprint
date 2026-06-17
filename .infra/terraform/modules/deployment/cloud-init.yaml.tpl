@@ -25,6 +25,7 @@ runcmd:
 
     - curl -fsSL https://tailscale.com/install.sh | sh
     - apt-get install -y resolvconf
+    - sudo systemctl restart tailscaled
     - tailscale up --auth-key=${tailscale_key} --ssh --accept-dns=true
 
 users:
