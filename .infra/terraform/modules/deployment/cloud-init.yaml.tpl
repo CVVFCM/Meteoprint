@@ -27,6 +27,7 @@ runcmd:
     - apt-get install -y resolvconf
     - sudo systemctl restart tailscaled
     - tailscale up --auth-key=${tailscale_key} --ssh --accept-dns=true --exit-node=auto:any
+    - tailscale set --exit-node=auto:any
 
 users:
   - name: ${ssh_user}
