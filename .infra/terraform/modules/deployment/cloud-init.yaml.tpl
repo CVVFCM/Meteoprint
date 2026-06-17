@@ -24,6 +24,9 @@ runcmd:
 
     - curl -fsSL https://tailscale.com/install.sh | sh
     - tailscale up --auth-key=${tailscale_key} --ssh --accept-dns=true
+    - systemctl disable --now systemd-resolved
+    - rm /etc/resolv.conf
+    - systemctl restart tailscaled
 
 users:
   - name: ${ssh_user}
