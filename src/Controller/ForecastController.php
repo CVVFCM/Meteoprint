@@ -12,6 +12,8 @@ use App\ValueObject\Geo;
 use Symfony\Component\Clock\ClockInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mercure\HubInterface;
+use Symfony\Component\Mercure\Update;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Twig\Environment;
@@ -29,12 +31,14 @@ final readonly class ForecastController
      * geocoder/topic so cache keys stay stable.
      */
     private const int PRECISION = 2;
+    private const string REPLAY_CURSOR_EVENT_TYPE = 'forecast.cursor';
 
     public function __construct(
         private Environment $twig,
         private ForecastRepository $repository,
         private MessageBusInterface $bus,
         private ClockInterface $clock,
+        private HubInterface $hub,
     ) {
     }
 
@@ -50,14 +54,25 @@ final readonly class ForecastController
     public function __invoke(float $latitude, float $longitude): Response
     {
         $position = new Geo(round($latitude, self::PRECISION), round($longitude, self::PRECISION));
+        $topic = ForecastChannel::topic($position);
         $now = $this->clock->now();
         $today = $now->setTime(0, 0);
+        $lastEventId = null;
+        $dispatchedFetch = false;
 
         $days = [];
         foreach ([$today, $today->modify('+1 day')] as $day) {
             $forecast = $this->repository->findOneForDay($position, $day);
 
             if (null === $forecast || $forecast->isStale($now)) {
+                if (!$dispatchedFetch) {
+                    $lastEventId = $this->hub->publish(new Update(
+                        $topic,
+                        type: self::REPLAY_CURSOR_EVENT_TYPE,
+                    ));
+                    $dispatchedFetch = true;
+                }
+
                 $this->bus->dispatch(new FetchForecast($position, $day));
             }
 
@@ -66,8 +81,9 @@ final readonly class ForecastController
 
         return new Response($this->twig->render('forecast/index.html.twig', [
             'position' => $position,
-            'topic' => ForecastChannel::topic($position),
+            'topic' => $topic,
             'days' => $days,
+            'lastEventId' => $lastEventId,
         ]));
     }
 }

@@ -28,5 +28,6 @@
 /.php-cs-fixer.cache
 ###< friendsofphp/php-cs-fixer ###
 
+.infra/docker/tls
 .infra/terraform/.terraform
 node_modules
