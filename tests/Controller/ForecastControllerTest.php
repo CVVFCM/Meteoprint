@@ -13,8 +13,8 @@ use App\ValueObject\Geo;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\Mercure\HubInterface;
-use Symfony\Component\Mercure\Update;
 use Symfony\Component\Mercure\Jwt\TokenFactoryInterface;
+use Symfony\Component\Mercure\Update;
 use Symfony\Component\Messenger\Transport\InMemory\InMemoryTransport;
 
 final class ForecastControllerTest extends WebTestCase
@@ -38,6 +38,11 @@ final class ForecastControllerTest extends WebTestCase
             'https://localhost/.well-known/mercure?topic=forecast%2F48.85%2F2.35&lastEventID=forecast-cursor-1&Last-Event-ID=forecast-cursor-1',
             (string) $crawler->filter('turbo-mercure-stream-source')->attr('src'),
         );
+        self::assertStringContainsString('Meteoprint', trim($crawler->filter('title')->text()));
+        self::assertNotSame('', (string) $crawler->filter('meta[name="description"]')->attr('content'));
+        self::assertSame('noindex,follow', (string) $crawler->filter('meta[name="robots"]')->attr('content'));
+        self::assertCount(0, $crawler->filter('link[rel="canonical"]'));
+        self::assertCount(0, $crawler->filter('meta[property="og:url"]'));
         self::assertCount(1, $hub->updates);
         self::assertSame(['forecast/48.85/2.35'], $hub->updates[0]->getTopics());
         self::assertSame('forecast.cursor', $hub->updates[0]->getType());
@@ -76,6 +81,12 @@ final class ForecastControllerTest extends WebTestCase
             (string) $crawler->filter('turbo-mercure-stream-source')->attr('src'),
         );
         self::assertCount(0, $crawler->filter('.day__loading'));
+        $weatherLabels = array_map(
+            $this->normalizeText(...),
+            $crawler->filter('.slot__weather-label')->each(static fn ($node): string => $node->text()),
+        );
+        self::assertContains('Plutot degage', $weatherLabels);
+        self::assertContains('Pluie moderee', $weatherLabels);
         self::assertCount(0, $hub->updates);
 
         $transport = static::getContainer()->get('messenger.transport.async');
@@ -110,7 +121,21 @@ final class ForecastControllerTest extends WebTestCase
             'https://localhost/.well-known/mercure?topic=forecast%2F48.86%2F2.35',
             (string) $crawler->filter('turbo-mercure-stream-source')->attr('src'),
         );
+        self::assertStringContainsString('Paris Voile', trim($crawler->filter('title')->text()));
+        self::assertStringContainsString('Meteoprint', trim($crawler->filter('title')->text()));
+        self::assertStringContainsString('Paris Voile', (string) $crawler->filter('meta[name="description"]')->attr('content'));
+        self::assertSame('index,follow', (string) $crawler->filter('meta[name="robots"]')->attr('content'));
+        self::assertSame('http://localhost/forecast/paris-voile', (string) $crawler->filter('link[rel="canonical"]')->attr('href'));
+        self::assertSame('http://localhost/forecast/paris-voile', (string) $crawler->filter('meta[property="og:url"]')->attr('content'));
+        self::assertStringContainsString('Paris Voile', (string) $crawler->filter('meta[property="og:title"]')->attr('content'));
+        self::assertStringContainsString('Meteoprint', (string) $crawler->filter('meta[property="og:title"]')->attr('content'));
         self::assertCount(0, $crawler->filter('.day__loading'));
+        $weatherLabels = array_map(
+            $this->normalizeText(...),
+            $crawler->filter('.slot__weather-label')->each(static fn ($node): string => $node->text()),
+        );
+        self::assertContains('Plutot degage', $weatherLabels);
+        self::assertContains('Pluie moderee', $weatherLabels);
         self::assertCount(0, $hub->updates);
 
         $transport = static::getContainer()->get('messenger.transport.async');
@@ -156,7 +181,24 @@ final class ForecastControllerTest extends WebTestCase
                 windDirection: 90,
                 windGust: 18.0,
             ),
+            new ForecastSlot(
+                hour: 12,
+                weatherCode: 63,
+                temperature: 17.0,
+                windSpeed: 14.0,
+                windDirection: 120,
+                windGust: 22.0,
+            ),
         ];
+    }
+
+    private function normalizeText(string $text): string
+    {
+        return str_replace(
+            ['é', 'è', 'ê', 'à', 'ù', 'ô', 'î', 'ï', "\u{00A0}"],
+            ['e', 'e', 'e', 'a', 'u', 'o', 'i', 'i', ' '],
+            trim($text),
+        );
     }
 }
 

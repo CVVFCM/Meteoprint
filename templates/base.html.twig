@@ -1,8 +1,29 @@
 <!DOCTYPE html>
-<html>
+<html lang="{{ app.request.locale|default('en') }}">
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
+        {% set pageTitle %}{% block title %}Welcome!{% endblock %}{% endset %}
+        {% set metaDescription %}{% block meta_description %}{% endblock %}{% endset %}
+        {% set canonicalUrl %}{% block canonical_url %}{% endblock %}{% endset %}
+        {% set robotsContent %}{% block meta_robots %}index,follow{% endblock %}{% endset %}
+        {% set ogType %}{% block meta_og_type %}website{% endblock %}{% endset %}
+        <title>{{ pageTitle|trim }}</title>
+        {% if metaDescription|trim != '' %}
+            <meta name="description" content="{{ metaDescription|striptags|trim }}">
+        {% endif %}
+        <meta name="robots" content="{{ robotsContent|trim }}">
+        {% if canonicalUrl|trim != '' %}
+            <link rel="canonical" href="{{ canonicalUrl|trim }}">
+        {% endif %}
+        <meta property="og:title" content="{{ pageTitle|striptags|trim }}">
+        {% if metaDescription|trim != '' %}
+            <meta property="og:description" content="{{ metaDescription|striptags|trim }}">
+        {% endif %}
+        <meta property="og:type" content="{{ ogType|trim }}">
+        <meta property="og:site_name" content="{{ 'seo.site_name'|trans }}">
+        {% if canonicalUrl|trim != '' %}
+            <meta property="og:url" content="{{ canonicalUrl|trim }}">
+        {% endif %}
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
         {% block stylesheets %}
         {% endblock %}

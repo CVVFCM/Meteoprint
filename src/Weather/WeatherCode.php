@@ -12,6 +12,7 @@ namespace App\Weather;
  */
 enum WeatherCode: int
 {
+    case UNKNOWN = -1;
     case CLEAR = 0;
     case MAINLY_CLEAR = 1;
     case PARTLY_CLOUDY = 2;
@@ -41,12 +42,13 @@ enum WeatherCode: int
     case THUNDERSTORM_SLIGHT_HAIL = 96;
     case THUNDERSTORM_HEAVY_HAIL = 99;
 
-    public function icon(): string
+    public function icon(bool $isDay = true): string
     {
         return match ($this) {
-            self::CLEAR => '☀️',
-            self::MAINLY_CLEAR => '🌤️',
-            self::PARTLY_CLOUDY => '⛅',
+            self::UNKNOWN => '·',
+            self::CLEAR => $isDay ? '☀️' : '🌙',
+            self::MAINLY_CLEAR => $isDay ? '🌤️' : '🌙',
+            self::PARTLY_CLOUDY => $isDay ? '⛅' : '☁️',
             self::OVERCAST => '☁️',
             self::FOG, self::DEPOSITING_RIME_FOG => '🌫️',
             self::DRIZZLE_LIGHT, self::DRIZZLE_MODERATE, self::DRIZZLE_DENSE,
@@ -62,11 +64,14 @@ enum WeatherCode: int
 
     public function translationKey(): string
     {
-        return 'weather.code.'.$this->value;
+        return match ($this) {
+            self::UNKNOWN => 'weather.code.unknown',
+            default => 'weather.code.'.$this->value,
+        };
     }
 
-    public static function tryFromCode(int $code): self
+    public static function tryFromCode(?int $code): self
     {
-        return self::tryFrom($code) ?? self::OVERCAST;
+        return null !== $code ? (self::tryFrom($code) ?? self::UNKNOWN) : self::UNKNOWN;
     }
 }

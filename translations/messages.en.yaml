@@ -1,6 +1,11 @@
+seo:
+    site_name: Meteoprint
+
 homepage:
     title: Printable weather
     subtitle: Search for a place to generate its weather report.
+    meta_title: Printable weather reports for sailing spots | Meteoprint
+    meta_description: Search for a place or sailing club to generate a printable weather report for today and tomorrow.
     submit: View weather
     search:
         label: Place
@@ -14,6 +19,10 @@ spot:
 
 forecast:
     title: Weather report
+    meta_title: Printable weather report | Meteoprint
+    meta_title_spot: '%spot% weather report | Meteoprint'
+    meta_description_spot: Printable weather report for %spot%, with today's and tomorrow's forecast.
+    meta_description_coordinates: 'Printable weather report for coordinates %latitude%, %longitude%, with today''s and tomorrow''s forecast.'
     coordinates: 'Coordinates: %latitude%, %longitude%'
     back: Back to home
     today: Today
@@ -30,6 +39,7 @@ forecast:
 
 weather:
     code:
+        unknown: Unavailable
         0: Clear sky
         1: Mainly clear
         2: Partly cloudy

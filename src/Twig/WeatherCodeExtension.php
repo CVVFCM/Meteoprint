@@ -24,9 +24,9 @@ final class WeatherCodeExtension extends AbstractExtension
         ];
     }
 
-    public function icon(int $code): string
+    public function icon(int $code, bool $isDay = true): string
     {
-        return WeatherCode::tryFromCode($code)->icon();
+        return WeatherCode::tryFromCode($code)->icon($isDay);
     }
 
     public function label(int $code): string

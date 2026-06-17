@@ -11,9 +11,11 @@ use App\Bridge\OpenMeteo\Enum\WindSpeedUnit;
 use App\Bridge\OpenMeteo\Message\FetchForecast;
 use App\Bridge\OpenMeteo\OpenMeteoClient;
 use App\Bridge\OpenMeteo\Request\ForecastRequest;
+use App\Bridge\OpenMeteo\Response\VariableBlock;
 use App\Entity\Forecast as ForecastEntity;
 use App\Forecast\ForecastChannel;
 use App\Repository\ForecastRepository;
+use App\Weather\WeatherCode;
 use App\ValueObject\ForecastSlot;
 use Symfony\Component\Clock\ClockInterface;
 use Symfony\Component\Mercure\HubInterface;
@@ -47,9 +49,10 @@ final readonly class FetchForecastHandler
         $date = $day->format('Y-m-d');
 
         $request = (new ForecastRequest($position->latitude, $position->longitude))
-            ->models(WeatherModel::METEOFRANCE_AROME_FRANCE_HD)
+            ->models(WeatherModel::METEOFRANCE_SEAMLESS)
             ->hourly(
                 HourlyVariable::WEATHER_CODE,
+                HourlyVariable::IS_DAY,
                 HourlyVariable::TEMPERATURE_2M,
                 HourlyVariable::WIND_SPEED_10M,
                 HourlyVariable::WIND_DIRECTION_10M,
@@ -68,10 +71,23 @@ final readonly class FetchForecastHandler
         }
 
         $codes = $hourly->get(HourlyVariable::WEATHER_CODE);
+        $isDaySeries = $hourly->get(HourlyVariable::IS_DAY);
         $temperatures = $hourly->get(HourlyVariable::TEMPERATURE_2M);
         $windSpeeds = $hourly->get(HourlyVariable::WIND_SPEED_10M);
         $windDirections = $hourly->get(HourlyVariable::WIND_DIRECTION_10M);
         $windGusts = $hourly->get(HourlyVariable::WIND_GUSTS_10M);
+
+        if (!self::seriesHasNumericValue($codes) || !self::seriesHasNumericValue($isDaySeries)) {
+            $fallbackHourly = $this->fetchFallbackWeatherContext($position, $date);
+            if (null !== $fallbackHourly) {
+                if (!self::seriesHasNumericValue($codes)) {
+                    $codes = $fallbackHourly->get(HourlyVariable::WEATHER_CODE);
+                }
+                if (!self::seriesHasNumericValue($isDaySeries)) {
+                    $isDaySeries = $fallbackHourly->get(HourlyVariable::IS_DAY);
+                }
+            }
+        }
 
         $indexByHour = [];
         foreach ($hourly->time() as $index => $time) {
@@ -89,7 +105,8 @@ final readonly class FetchForecastHandler
             $index = $indexByHour[$hour];
             $slots[] = new ForecastSlot(
                 hour: $hour,
-                weatherCode: (int) self::valueAt($codes, $index),
+                weatherCode: self::intValueAt($codes, $index) ?? WeatherCode::UNKNOWN->value,
+                isDay: self::boolValueAt($isDaySeries, $index),
                 temperature: self::valueAt($temperatures, $index),
                 windSpeed: self::valueAt($windSpeeds, $index),
                 windDirection: (int) round(self::valueAt($windDirections, $index)),
@@ -128,5 +145,46 @@ final readonly class FetchForecastHandler
         }
 
         return 0.0;
+    }
+
+    private static function intValueAt(mixed $series, int $index): ?int
+    {
+        if (\is_array($series) && isset($series[$index]) && is_numeric($series[$index])) {
+            return (int) $series[$index];
+        }
+
+        return null;
+    }
+
+    private static function boolValueAt(mixed $series, int $index): bool
+    {
+        return 1 === self::intValueAt($series, $index);
+    }
+
+    private static function seriesHasNumericValue(mixed $series): bool
+    {
+        if (!\is_array($series)) {
+            return false;
+        }
+
+        foreach ($series as $value) {
+            if (is_numeric($value)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function fetchFallbackWeatherContext(\App\ValueObject\Geo $position, string $date): ?VariableBlock
+    {
+        $request = (new ForecastRequest($position->latitude, $position->longitude))
+            ->hourly(HourlyVariable::WEATHER_CODE, HourlyVariable::IS_DAY)
+            ->timezone('auto')
+            ->startDate($date)
+            ->endDate($date)
+            ->timeFormat(TimeFormat::ISO8601);
+
+        return $this->client->forecast($request)->hourly;
     }
 }

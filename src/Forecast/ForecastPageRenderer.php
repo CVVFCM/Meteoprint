@@ -18,8 +18,8 @@ use Twig\Environment;
 final readonly class ForecastPageRenderer
 {
     /**
-     * Arome HD resolution is ~1.5 km, so 2 decimals (~1.1 km) is plenty. Shared with the
-     * geocoder/topic so cache keys stay stable.
+     * Meteo-France seamless keeps high-resolution local detail; 2 decimals (~1.1 km) is enough
+     * and keeps geocoder/topic/cache keys stable.
      */
     private const int PRECISION = 2;
     private const string REPLAY_CURSOR_EVENT_TYPE = 'forecast.cursor';

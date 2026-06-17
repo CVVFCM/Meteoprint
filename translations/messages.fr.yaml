@@ -1,6 +1,11 @@
+seo:
+    site_name: Meteoprint
+
 homepage:
     title: Météo imprimable
     subtitle: Recherchez un lieu pour générer son bulletin météo.
+    meta_title: Bulletins météo imprimables pour les spots nautiques | Meteoprint
+    meta_description: Recherchez un lieu ou un club nautique pour générer un bulletin météo imprimable pour aujourd'hui et demain.
     submit: Voir la météo
     search:
         label: Lieu
@@ -14,6 +19,10 @@ spot:
 
 forecast:
     title: Bulletin météo
+    meta_title: Bulletin météo imprimable | Meteoprint
+    meta_title_spot: 'Bulletin météo de %spot% | Meteoprint'
+    meta_description_spot: 'Bulletin météo imprimable pour %spot%, avec les prévisions d''aujourd''hui et de demain.'
+    meta_description_coordinates: 'Bulletin météo imprimable pour les coordonnées %latitude%, %longitude%, avec les prévisions d''aujourd''hui et de demain.'
     coordinates: 'Coordonnées : %latitude%, %longitude%'
     back: Retour à l'accueil
     today: Aujourd'hui
@@ -30,6 +39,7 @@ forecast:
 
 weather:
     code:
+        unknown: Indisponible
         0: Ciel dégagé
         1: Plutôt dégagé
         2: Partiellement nuageux

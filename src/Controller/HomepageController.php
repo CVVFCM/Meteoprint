@@ -46,7 +46,7 @@ final readonly class HomepageController
 
             $coordinates = PlaceSelection::coordinates($value);
 
-            // Arome HD resolution is ~1.5 km → 2 decimals is enough and keeps the URL tidy.
+            // Meteo-France seamless keeps enough local detail that 2 decimals is sufficient and tidy.
             return new RedirectResponse($this->urlGenerator->generate('forecast', [
                 'latitude' => round($coordinates['latitude'], 2),
                 'longitude' => round($coordinates['longitude'], 2),

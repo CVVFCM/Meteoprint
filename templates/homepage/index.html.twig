@@ -1,11 +1,15 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ 'homepage.title'|trans }}{% endblock %}
+{% block title %}{{ 'homepage.meta_title'|trans }}{% endblock %}
+{% block meta_description %}{{ 'homepage.meta_description'|trans }}{% endblock %}
+{% block canonical_url %}{{ absolute_url(path('homepage')) }}{% endblock %}
 
 {% block body %}
     <main>
-        <h1>{{ 'homepage.title'|trans }}</h1>
-        <p>{{ 'homepage.subtitle'|trans }}</p>
+        <header>
+            <h1>{{ 'homepage.title'|trans }}</h1>
+            <p>{{ 'homepage.subtitle'|trans }}</p>
+        </header>
 
         {{ form_start(form) }}
             {{ form_row(form.place) }}

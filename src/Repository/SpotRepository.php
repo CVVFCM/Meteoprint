@@ -24,6 +24,20 @@ final class SpotRepository extends ServiceEntityRepository
     }
 
     /**
+     * @return list<Spot>
+     */
+    public function findAllOrderedBySlug(): array
+    {
+        /** @var list<Spot> $result */
+        $result = $this->createQueryBuilder('s')
+            ->orderBy('s.slug', 'ASC')
+            ->getQuery()
+            ->getResult();
+
+        return $result;
+    }
+
+    /**
      * Case-insensitive "contains" search on the spot name.
      *
      * @return list<Spot>

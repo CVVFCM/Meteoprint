@@ -17,6 +17,8 @@ final readonly class ForecastSlot
         public int $windDirection,
         // Default keeps forecasts stored before gusts were added hydratable.
         public float $windGust = 0.0,
+        // Default keeps forecasts stored before day/night icon support hydratable.
+        public bool $isDay = true,
     ) {
     }
 }

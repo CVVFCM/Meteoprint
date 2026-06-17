@@ -20,6 +20,14 @@ final class HomepageControllerTest extends WebTestCase
         self::assertResponseIsSuccessful();
         // The UX Autocomplete TextType renders an autocomplete-controlled <input>.
         self::assertCount(1, $crawler->filter('input[name="place_search[place]"][data-controller~="symfony--ux-autocomplete--autocomplete"]'));
+        self::assertStringContainsString('Meteoprint', trim($crawler->filter('title')->text()));
+        self::assertNotSame('', (string) $crawler->filter('meta[name="description"]')->attr('content'));
+        self::assertSame('index,follow', (string) $crawler->filter('meta[name="robots"]')->attr('content'));
+        self::assertSame('http://localhost/', (string) $crawler->filter('link[rel="canonical"]')->attr('href'));
+        self::assertSame('website', (string) $crawler->filter('meta[property="og:type"]')->attr('content'));
+        self::assertSame('http://localhost/', (string) $crawler->filter('meta[property="og:url"]')->attr('content'));
+        self::assertStringContainsString('Meteoprint', (string) $crawler->filter('meta[property="og:title"]')->attr('content'));
+        self::assertNotSame('', (string) $crawler->filter('meta[property="og:description"]')->attr('content'));
     }
 
     public function testValidSelectionRedirectsToForecast(): void
@@ -27,7 +35,7 @@ final class HomepageControllerTest extends WebTestCase
         $client = static::createClient();
         $client->request('GET', '/', ['place_search' => ['place' => '48.853000,2.349000']]);
 
-        // Coordinates are rounded to 2 decimals (Arome HD resolution).
+        // Coordinates are rounded to 2 decimals to keep forecast URLs stable and tidy.
         self::assertResponseRedirects('/forecast/48.85/2.35');
     }
 
