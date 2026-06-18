@@ -72,3 +72,7 @@ test: vendor/
 .PHONY: stan
 stan: vendor/
 	@$(DOCKER_COMPOSE) exec -T php ./vendor/bin/phpstan analyse --ansi --memory-limit 1G
+
+.PHONY: mate
+mate: ## Run the mate command
+	@$(DOCKER_COMPOSE) exec php ./vendor/bin/mate serve --force-keep-alive

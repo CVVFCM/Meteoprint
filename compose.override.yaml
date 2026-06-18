@@ -12,6 +12,10 @@ services:
             tls /app/.infra/docker/tls/cert.pem /app/.infra/docker/tls/cert.key
         }
       MERCURE_EXTRA_DIRECTIVES: anonymous
+    ports:
+      - target: 32000
+        published: ${MATE_PORT:-32000}
+        protocol: tcp
     volumes:
       - '.:/app:rw'
       - './.infra/docker/php/conf.d/symfony.dev.ini:/usr/local/etc/php/conf.d/symfony.ini:ro'

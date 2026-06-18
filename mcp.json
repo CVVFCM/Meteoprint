@@ -1,0 +1,10 @@
+{
+    "mcpServers": {
+        "symfony-ai-mate": {
+            "command": "make",
+            "args": [
+                "mate"
+            ]
+        }
+    }
+}
