@@ -2,6 +2,26 @@ ARG PHP_VERSION=8.5
 ARG FRANKENPHP_VERSION=1.12
 ARG DEBIAN_VERSION=trixie
 
+FROM dunglas/frankenphp:${FRANKENPHP_VERSION}-builder-php${PHP_VERSION}-${DEBIAN_VERSION} AS builder
+
+COPY --from=caddy:builder /usr/bin/xcaddy /usr/bin/xcaddy
+
+WORKDIR /go/src/app
+
+RUN CGO_ENABLED=1 \
+    XCADDY_SETCAP=1 \
+    XCADDY_GO_BUILD_FLAGS="-ldflags='-w -s' -tags=nobadger,nomysql,nopgx" \
+    CGO_CFLAGS=$(php-config --includes) \
+    CGO_LDFLAGS="$(php-config --ldflags) $(php-config --libs)" \
+    xcaddy build \
+        --output /usr/local/bin/frankenphp \
+        --with github.com/dunglas/frankenphp=./ \
+        --with github.com/dunglas/frankenphp/caddy=./caddy/ \
+        --with github.com/dunglas/caddy-cbrotli \
+        --with github.com/dunglas/mercure/caddy \
+        --with github.com/dunglas/vulcain/caddy \
+        --with github.com/darkweak/souin/plugins/caddy
+
 FROM dunglas/frankenphp:${FRANKENPHP_VERSION}-php${PHP_VERSION}-${DEBIAN_VERSION} AS app
 
 
@@ -21,6 +41,8 @@ RUN set -eux; \
 
 COPY --chown=www-data:www-data .infra/docker/php/Caddyfile /etc/caddy/Caddyfile
 COPY --chown=www-data:www-data .infra/docker/php/docker-entrypoint /usr/local/bin/docker-entrypoint
+
+COPY --from=builder /usr/local/bin/frankenphp /usr/local/bin/frankenphp
 
 RUN chmod a+x /usr/local/bin/docker-entrypoint
 
