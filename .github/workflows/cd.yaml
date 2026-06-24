@@ -43,7 +43,7 @@ jobs:
                 uses: docker/bake-action@v7
                 env:
                     EXTERNAL_USER_ID: 33
-                    TAGS: "${{ steps.meta.outputs.version }}${{ github.event_name == 'release' && ',latest' || '' }}"
+                    TAGS: "${{ steps.meta.outputs.version }},${{ github.sha }}${{ github.event_name == 'release' && ',latest' || '' }}"
                 with:
                     files: |
                         compose.yaml
@@ -73,7 +73,7 @@ jobs:
                 run: |
                     helm upgrade --install meteoprint .infra/helm/meteoprint \
                       --namespace meteoprint --create-namespace \
-                      --set image.tag="${{ github.ref_name }}" \
+                      --set image.tag="${{ github.sha }}" \
                       --set externalDatabase.url="${{ secrets.DATABASE_URL }}" \
                       --set secrets.appSecret="${{ secrets.APP_SECRET }}" \
                       --set secrets.mercureJwtSecret="${{ secrets.MERCURE_JWT_SECRET }}" \
