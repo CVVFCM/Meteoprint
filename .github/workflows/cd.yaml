@@ -77,7 +77,6 @@ jobs:
                       --namespace meteoprint --create-namespace \
                       --set image.tag="${{ github.sha }}" \
                       --set postgresql.enabled=true \
-                      --set postgresql.auth.password="${{ secrets.DATABASE_PASSWORD }}" \
                       --set secrets.appSecret="${{ secrets.APP_SECRET }}" \
                       --set secrets.mercureJwtSecret="${{ secrets.MERCURE_JWT_SECRET }}" \
                       --wait --rollback-on-failure --timeout 5m

@@ -70,7 +70,9 @@ postgresql:
   enabled: false
   auth:
     username: meteoprint
-    # Set via --set / sealed-secret. Avoid characters needing URL-encoding.
+    # Leave empty: the subchart auto-generates a password into the
+    # "<release>-postgresql" Secret, which the app reads via secretKeyRef +
+    # $(PGPASSWORD) expansion in DATABASE_URL. Reused across upgrades.
     password: ""
     database: meteoprint
   primary:

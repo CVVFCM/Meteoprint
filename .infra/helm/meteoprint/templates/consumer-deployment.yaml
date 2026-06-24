@@ -45,6 +45,10 @@ spec:
                 name: {{ include "meteoprint.fullname" . }}-config
             - secretRef:
                 name: {{ include "meteoprint.fullname" . }}-secret
+          {{- if .Values.postgresql.enabled }}
+          env:
+            {{- include "meteoprint.dbEnv" . | nindent 12 }}
+          {{- end }}
           livenessProbe:
             exec:
               command: ["php", "-v"]

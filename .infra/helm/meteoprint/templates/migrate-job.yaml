@@ -41,6 +41,10 @@ spec:
                 name: {{ include "meteoprint.fullname" . }}-config
             - secretRef:
                 name: {{ include "meteoprint.fullname" . }}-secret
+          {{- if .Values.postgresql.enabled }}
+          env:
+            {{- include "meteoprint.dbEnv" . | nindent 12 }}
+          {{- end }}
           resources:
             {{- toYaml .Values.migrations.resources | nindent 12 }}
 {{- end }}
