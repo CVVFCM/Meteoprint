@@ -50,18 +50,22 @@ spec:
           env:
             {{- include "meteoprint.dbEnv" . | nindent 12 }}
           {{- end }}
+          startupProbe:
+            httpGet:
+              path: /metrics
+              port: admin
+            periodSeconds: 3
+            failureThreshold: 20
           readinessProbe:
             httpGet:
               path: /metrics
               port: admin
-            initialDelaySeconds: 10
             periodSeconds: 10
             timeoutSeconds: 5
           livenessProbe:
             httpGet:
               path: /metrics
               port: admin
-            initialDelaySeconds: 30
             periodSeconds: 30
             timeoutSeconds: 10
             failureThreshold: 3

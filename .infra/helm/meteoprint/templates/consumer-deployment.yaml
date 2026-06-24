@@ -51,8 +51,8 @@ spec:
           {{- end }}
           livenessProbe:
             exec:
-              command: ["php", "-v"]
-            initialDelaySeconds: 30
+              command: ["sh", "-c", "pgrep -f 'messenger:consume' >/dev/null"]
+            initialDelaySeconds: 20
             periodSeconds: 30
             timeoutSeconds: 10
             failureThreshold: 3
