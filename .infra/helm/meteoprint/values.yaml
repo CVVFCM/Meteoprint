@@ -78,8 +78,11 @@ app:
   debug: "false"
   # ":80" → plain HTTP only; Caddy will not attempt auto-HTTPS (TLS is at the Gateway).
   serverName: ":80"
-  # Internal URL the app publishes Mercure updates to.
-  mercureUrl: http://localhost/.well-known/mercure
+  # Internal URL the app POSTs Mercure updates to. MUST be the in-cluster web Service
+  # (the FrankenPHP pod that hosts the hub) — NOT localhost, because the consumer runs
+  # in a separate pod with no local hub. Empty → derived as
+  # http://<release>-web/.well-known/mercure.
+  mercureUrl: ""
   # Public URL the browser connects to for Mercure. Empty → derived as
   # https://<host>/.well-known/mercure.
   mercurePublicUrl: ""

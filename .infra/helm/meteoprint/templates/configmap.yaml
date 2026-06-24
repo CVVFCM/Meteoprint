@@ -9,7 +9,7 @@ data:
   APP_DEBUG: {{ .Values.app.debug | quote }}
   SERVER_NAME: {{ .Values.app.serverName | quote }}
   MESSENGER_TRANSPORT_DSN: {{ .Values.app.messengerTransportDsn | quote }}
-  MERCURE_URL: {{ .Values.app.mercureUrl | quote }}
+  MERCURE_URL: {{ .Values.app.mercureUrl | default (printf "http://%s-web/.well-known/mercure" (include "meteoprint.fullname" .)) | quote }}
   MERCURE_PUBLIC_URL: {{ .Values.app.mercurePublicUrl | default (printf "https://%s/.well-known/mercure" .Values.host) | quote }}
   OPEN_METEO_BASE_URL: {{ .Values.app.openMeteoBaseUrl | quote }}
   DEFAULT_URI: {{ .Values.app.defaultUri | default (printf "https://%s" .Values.host) | quote }}
