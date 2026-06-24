@@ -33,7 +33,7 @@ spec:
             - bin/console
             - doctrine:migrations:migrate
             - --no-interaction
-            - --all-or-nothing
+            - --no-all-or-nothing
           envFrom:
             - configMapRef:
                 name: {{ include "meteoprint.fullname" . }}-config
