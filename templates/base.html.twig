@@ -40,9 +40,6 @@
         {% endif %}
     </head>
     <body>
-        {# Issue the Mercure subscriber-authorization cookie on every page so any
-           Turbo/Mercure stream is authorized as soon as it connects. #}
-        {% do mercure(null, {subscribe: ['*']}) %}
         {% block body %}{% endblock %}
     </body>
 </html>

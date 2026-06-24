@@ -11,6 +11,7 @@ services:
         https:// {
             tls /app/.infra/docker/tls/cert.pem /app/.infra/docker/tls/cert.key
         }
+      MERCURE_EXTRA_DIRECTIVES: anonymous
     ports:
       - target: 32000
         published: ${MATE_PORT:-32000}

@@ -22,8 +22,11 @@
 {% block meta_robots %}{% if spot is not null %}index,follow{% else %}noindex,follow{% endif %}{% endblock %}
 
 {% block body %}
-    {# Subscriber cookie is issued by the layout; here we only build the stream URL. #}
-    {% set mercureOptions = lastEventId ? {lastEventId: lastEventId} : {} %}
+    {# Mint the subscriber-authorization cookie scoped to this stream. Done here (not the
+       layout) so it only runs on real, public-host requests — health probes and other
+       internal hosts would trip Mercure's same-domain cookie check. #}
+    {% set mercureOptions = {subscribe: ['*']} %}
+    {% if lastEventId %}{% set mercureOptions = mercureOptions|merge({lastEventId: lastEventId}) %}{% endif %}
     <turbo-mercure-stream-source src="{{ mercure(topic, mercureOptions) }}"></turbo-mercure-stream-source>
 
     <main class="forecast">
