@@ -43,7 +43,6 @@ RUN set -eux; \
           opcache \
           pcntl \
           pdo_pgsql \
-          oci8 \
           zip \
       ; \
     sync

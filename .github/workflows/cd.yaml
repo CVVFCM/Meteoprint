@@ -69,25 +69,15 @@ jobs:
                     mkdir -p ~/.kube
                     echo "${{ secrets.K3S_KUBECONFIG }}" > ~/.kube/config
                     chmod 600 ~/.kube/config
-            -   name: Create Oracle wallet secret
-                run: |
-                    echo "${{ secrets.ORACLE_WALLET_B64 }}" | base64 -d > /tmp/wallet.zip
-                    mkdir -p /tmp/wallet
-                    unzip -o /tmp/wallet.zip -d /tmp/wallet
-                    # Point the wallet at its in-pod mount path (default "?/network/admin"
-                    # resolves to ORACLE_HOME, empty in Instant Client → ORA-28759).
-                    sed -i 's#DIRECTORY="[^"]*"#DIRECTORY="/oracle/wallet"#' /tmp/wallet/sqlnet.ora
-                    kubectl create namespace meteoprint --dry-run=client -o yaml | kubectl apply -f -
-                    kubectl -n meteoprint create secret generic oracle-wallet \
-                      --from-file=/tmp/wallet \
-                      --dry-run=client -o yaml | kubectl apply -f -
+            -   name: Update chart dependencies
+                run: helm dependency update .infra/helm/meteoprint
             -   name: Helm deploy
                 run: |
                     helm upgrade --install meteoprint .infra/helm/meteoprint \
                       --namespace meteoprint --create-namespace \
                       --set image.tag="${{ github.sha }}" \
-                      --set externalDatabase.url="${{ secrets.DATABASE_URL }}" \
+                      --set postgresql.enabled=true \
+                      --set postgresql.auth.password="${{ secrets.DATABASE_PASSWORD }}" \
                       --set secrets.appSecret="${{ secrets.APP_SECRET }}" \
                       --set secrets.mercureJwtSecret="${{ secrets.MERCURE_JWT_SECRET }}" \
-                      --set oracleWallet.enabled=true \
                       --wait --rollback-on-failure --timeout 5m

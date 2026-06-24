@@ -63,14 +63,6 @@ spec:
             failureThreshold: 3
           resources:
             {{- toYaml .Values.web.resources | nindent 12 }}
-          {{- if .Values.oracleWallet.enabled }}
-          volumeMounts:
-            {{- include "meteoprint.walletMount" . | nindent 12 }}
-          {{- end }}
-      {{- if .Values.oracleWallet.enabled }}
-      volumes:
-        {{- include "meteoprint.walletVolume" . | nindent 8 }}
-      {{- end }}
       {{- with .Values.web.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
