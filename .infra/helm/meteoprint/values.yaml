@@ -49,6 +49,12 @@ gateway:
   namespace: ""
   # GatewayClass — Traefik's Gateway API provider. Verify: kubectl get gatewayclass
   className: traefik
+  # Listener ports MUST match Traefik's entrypoint (container) ports — Traefik maps
+  # listeners to entrypoints by port, NOT the Service's external port. K3s bundled
+  # Traefik: web=8000, websecure=8443 (Service maps external 80/443 → these).
+  # Confirm: kubectl -n kube-system get deploy traefik -o jsonpath='{range .spec.template.spec.containers[0].ports[*]}{.name}={.containerPort}{"\n"}{end}'
+  httpPort: 8000
+  httpsPort: 8443
   # Listener to attach the HTTPRoute to. Empty → attach to ALL listeners (HTTP works
   # immediately; HTTPS once tls.enabled). Set to "websecure" to pin HTTPS-only.
   sectionName: ""
