@@ -35,7 +35,17 @@ SHELL ["/bin/bash", "-euxo", "pipefail", "-c"]
 ARG EXTERNAL_USER_ID
 
 RUN set -eux; \
-    install-php-extensions @composer zip pdo_pgsql pcntl opcache intl mbstring apcu; \
+    install-php-extensions \
+          @composer \
+          apcu \
+          intl \
+          mbstring \
+          opcache \
+          pcntl \
+          pdo_pgsql \
+          oci8 \
+          zip \
+      ; \
     sync
 
 
