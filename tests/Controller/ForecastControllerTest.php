@@ -220,7 +220,7 @@ final class TestHub implements HubInterface
         return 'https://localhost/.well-known/mercure';
     }
 
-    public function getFactory(): ?TokenFactoryInterface
+    public function getFactory(): TokenFactoryInterface
     {
         // The forecast page mints a subscriber-authorization cookie
         // (mercure(..., {subscribe})), which requires a token factory on the hub.
