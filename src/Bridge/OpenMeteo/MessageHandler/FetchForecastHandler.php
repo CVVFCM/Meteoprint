@@ -45,9 +45,9 @@ final readonly class FetchForecastHandler
     public function __invoke(FetchForecast $message): void
     {
         $position = $message->position;
-        // Normalize to UTC so the persisted day and the Turbo target id are stable
-        // regardless of how the message's date survived transport (de)serialization.
-        $day = $message->day->setTimezone(new \DateTimeZone('UTC'));
+        $day = $message->day;
+        // Local calendar date: drives the OpenMeteo day fetch and the displayed day.
+        // The Turbo target id is keyed in UTC in the template (matches the page).
         $date = $day->format('Y-m-d');
 
         $request = (new ForecastRequest($position->latitude, $position->longitude))
@@ -116,7 +116,7 @@ final readonly class FetchForecastHandler
             );
         }
 
-        $now = $this->clock->now()->setTimezone(new \DateTimeZone('UTC'));
+        $now = $this->clock->now();
         $forecast = $this->repository->findOneForDay($position, $day);
 
         if (null === $forecast) {

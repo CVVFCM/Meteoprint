@@ -44,22 +44,29 @@ final readonly class ForecastPageRenderer
             round($rawPosition->longitude, self::PRECISION),
         );
         $topic = ForecastChannel::topic($position);
-        // Anchor the calendar day in UTC: the day drives the Mercure/Turbo target id
-        // ("forecast-day-Ymd"), which must match between this request and the worker
-        // regardless of either process's default timezone.
-        $now = $this->clock->now()->setTimezone(new \DateTimeZone('UTC'));
+        $now = $this->clock->now();
         $today = $now->setTime(0, 0);
-
-        $lastEventId = $this->hub->publish(new Update(
-            $topic,
-            type: self::REPLAY_CURSOR_EVENT_TYPE,
-        ));
+        $lastEventId = null;
+        $dispatchedFetch = false;
 
         $days = [];
         foreach ([$today, $today->modify('+1 day')] as $day) {
             $forecast = $this->repository->findOneForDay($position, $day);
 
             if (null === $forecast || $forecast->isStale($now)) {
+                // Only when something is actually being fetched: publish a replay
+                // cursor so the client can catch the fetch-complete update via
+                // Last-Event-ID. Fresh pages need no stream replay (avoids resurrecting
+                // stale history). The Turbo target id is keyed in UTC in the template,
+                // so it matches the worker's publish regardless of process timezone.
+                if (!$dispatchedFetch) {
+                    $lastEventId = $this->hub->publish(new Update(
+                        $topic,
+                        type: self::REPLAY_CURSOR_EVENT_TYPE,
+                    ));
+                    $dispatchedFetch = true;
+                }
+
                 $this->bus->dispatch(new FetchForecast($position, $day));
             }
 

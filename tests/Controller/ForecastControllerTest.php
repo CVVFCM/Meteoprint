@@ -13,6 +13,7 @@ use App\ValueObject\Geo;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\Mercure\HubInterface;
+use Symfony\Component\Mercure\Jwt\LcobucciFactory;
 use Symfony\Component\Mercure\Jwt\TokenFactoryInterface;
 use Symfony\Component\Mercure\Update;
 use Symfony\Component\Messenger\Transport\InMemory\InMemoryTransport;
@@ -221,7 +222,9 @@ final class TestHub implements HubInterface
 
     public function getFactory(): ?TokenFactoryInterface
     {
-        return null;
+        // The forecast page mints a subscriber-authorization cookie
+        // (mercure(..., {subscribe})), which requires a token factory on the hub.
+        return new LcobucciFactory('!ChangeThisMercureHubJWTSecretKey!');
     }
 
     public function publish(Update $update): string
