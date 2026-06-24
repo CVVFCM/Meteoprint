@@ -38,21 +38,24 @@ consumer:
 # Public hostname served by the app.
 host: meteoprint.cvvfcm.fr
 
-# Gateway API (Traefik on K3s). TLS terminates at the Gateway; FrankenPHP serves
-# plain HTTP on :80 inside the cluster.
+# Gateway API (Traefik on K3s). FrankenPHP serves plain HTTP on :80 in-cluster.
 gateway:
-  # When true, the chart also renders a Traefik Gateway. Leave false to attach the
-  # HTTPRoute to a Gateway that already exists in the cluster.
-  create: false
-  # Existing Gateway the HTTPRoute attaches to.
-  name: traefik-gateway
+  # When true, the chart renders the Gateway. Set false only to attach the HTTPRoute
+  # to a Gateway that already exists in the cluster.
+  create: true
+  # Gateway name the HTTPRoute attaches to (created here when create=true).
+  name: meteoprint
   # Defaults to the release namespace when empty.
   namespace: ""
-  # Listener name on the Gateway to attach to (HTTPS listener).
-  sectionName: websecure
-  # Used only when create=true.
+  # GatewayClass — Traefik's Gateway API provider. Verify: kubectl get gatewayclass
   className: traefik
+  # Listener to attach the HTTPRoute to. Empty → attach to ALL listeners (HTTP works
+  # immediately; HTTPS once tls.enabled). Set to "websecure" to pin HTTPS-only.
+  sectionName: ""
   tls:
+    # Off by default → HTTP-only listener, no cert needed (terminate TLS upstream,
+    # e.g. Cloudflare). Enable once a TLS Secret exists (cert-manager).
+    enabled: false
     secretName: meteoprint-tls
 
 # Non-secret application configuration (rendered into a ConfigMap).

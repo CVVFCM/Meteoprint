@@ -15,7 +15,8 @@ spec:
       allowedRoutes:
         namespaces:
           from: Same
-    - name: {{ .Values.gateway.sectionName }}
+    {{- if .Values.gateway.tls.enabled }}
+    - name: websecure
       protocol: HTTPS
       port: 443
       hostname: {{ .Values.host | quote }}
@@ -27,4 +28,5 @@ spec:
       allowedRoutes:
         namespaces:
           from: Same
+    {{- end }}
 {{- end }}
