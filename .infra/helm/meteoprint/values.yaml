@@ -73,7 +73,6 @@ externalDatabase:
 # Secret values. Supply via --set, a values.local.yaml, or a sealed-secret.
 secrets:
   appSecret: ""
-  symfonyDecryptionSecret: ""
   mercureJwtSecret: "!ChangeThisMercureHubJWTSecretKey!"
 
 # Database migration job (Helm pre-install/pre-upgrade hook).

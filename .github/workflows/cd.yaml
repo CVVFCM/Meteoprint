@@ -77,6 +77,5 @@ jobs:
                       --set host="${{ vars.SERVER_NAME }}" \
                       --set externalDatabase.url="${{ secrets.DATABASE_URL }}" \
                       --set secrets.appSecret="${{ secrets.APP_SECRET }}" \
-                      --set secrets.symfonyDecryptionSecret="${{ secrets.SYMFONY_DECRYPTION_SECRET }}" \
                       --set secrets.mercureJwtSecret="${{ secrets.MERCURE_JWT_SECRET }}" \
-                      --wait --atomic --timeout 5m
+                      --wait --rollback-on-failure --timeout 5m
