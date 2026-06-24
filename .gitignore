@@ -31,3 +31,4 @@
 .infra/docker/tls
 .infra/terraform/.terraform
 node_modules
+.configured
