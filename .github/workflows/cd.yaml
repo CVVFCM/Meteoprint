@@ -71,12 +71,20 @@ jobs:
                     chmod 600 ~/.kube/config
             -   name: Update chart dependencies
                 run: helm dependency update .infra/helm/meteoprint
+            -   name: Ensure DB credentials secret
+                run: |
+                    kubectl create namespace meteoprint --dry-run=client -o yaml | kubectl apply -f -
+                    kubectl -n meteoprint create secret generic meteoprint-pg-auth \
+                      --from-literal=password="${{ secrets.DATABASE_PASSWORD }}" \
+                      --from-literal=postgres-password="${{ secrets.DATABASE_PASSWORD }}" \
+                      --dry-run=client -o yaml | kubectl apply -f -
             -   name: Helm deploy
                 run: |
                     helm upgrade --install meteoprint .infra/helm/meteoprint \
                       --namespace meteoprint --create-namespace \
                       --set image.tag="${{ github.sha }}" \
                       --set postgresql.enabled=true \
+                      --set postgresql.auth.existingSecret=meteoprint-pg-auth \
                       --set secrets.appSecret="${{ secrets.APP_SECRET }}" \
                       --set secrets.mercureJwtSecret="${{ secrets.MERCURE_JWT_SECRET }}" \
                       --wait --rollback-on-failure --timeout 5m

@@ -77,11 +77,16 @@ postgresql:
   enabled: false
   auth:
     username: meteoprint
-    # Leave empty: the subchart auto-generates a password into the
-    # "<release>-postgresql" Secret, which the app reads via secretKeyRef +
-    # $(PGPASSWORD) expansion in DATABASE_URL. Reused across upgrades.
-    password: ""
     database: meteoprint
+    # Name of a pre-existing Secret holding the DB credentials (keys: "password",
+    # "postgres-password"). Owned outside the helm release so it survives uninstall
+    # and never regenerates — both the subchart and the app read it. Created by CD.
+    # If empty, the subchart auto-generates a password (not stable across uninstalls).
+    existingSecret: ""
+    secretKeys:
+      userPasswordKey: password
+      adminPasswordKey: postgres-password
+    password: ""
   primary:
     persistence:
       enabled: true

@@ -72,8 +72,8 @@ so the runtime substitution resolves. Empty unless postgresql.enabled.
 - name: PGPASSWORD
   valueFrom:
     secretKeyRef:
-      name: {{ .Release.Name }}-postgresql
-      key: password
+      name: {{ .Values.postgresql.auth.existingSecret | default (printf "%s-postgresql" .Release.Name) }}
+      key: {{ .Values.postgresql.auth.secretKeys.userPasswordKey | default "password" }}
 - name: DATABASE_URL
   value: {{ printf "postgresql://%s:$(PGPASSWORD)@%s-postgresql:5432/%s?serverVersion=%s&charset=utf8" .Values.postgresql.auth.username .Release.Name .Values.postgresql.auth.database .Values.externalDatabase.serverVersion | quote }}
 {{- end }}
