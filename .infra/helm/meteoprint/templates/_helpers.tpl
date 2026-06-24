@@ -61,3 +61,25 @@ Consumer component selector labels.
 {{ include "meteoprint.selectorLabels" . }}
 app.kubernetes.io/component: consumer
 {{- end }}
+
+{{/*
+Oracle wallet volume (pod spec). Empty unless oracleWallet.enabled.
+*/}}
+{{- define "meteoprint.walletVolume" -}}
+{{- if .Values.oracleWallet.enabled }}
+- name: oracle-wallet
+  secret:
+    secretName: {{ .Values.oracleWallet.secretName }}
+{{- end }}
+{{- end }}
+
+{{/*
+Oracle wallet volume mount (container spec). Empty unless oracleWallet.enabled.
+*/}}
+{{- define "meteoprint.walletMount" -}}
+{{- if .Values.oracleWallet.enabled }}
+- name: oracle-wallet
+  mountPath: {{ .Values.oracleWallet.mountPath }}
+  readOnly: true
+{{- end }}
+{{- end }}

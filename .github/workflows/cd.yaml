@@ -69,6 +69,15 @@ jobs:
                     mkdir -p ~/.kube
                     echo "${{ secrets.K3S_KUBECONFIG }}" > ~/.kube/config
                     chmod 600 ~/.kube/config
+            -   name: Create Oracle wallet secret
+                run: |
+                    echo "${{ secrets.ORACLE_WALLET_B64 }}" | base64 -d > /tmp/wallet.zip
+                    mkdir -p /tmp/wallet
+                    unzip -o /tmp/wallet.zip -d /tmp/wallet
+                    kubectl create namespace meteoprint --dry-run=client -o yaml | kubectl apply -f -
+                    kubectl -n meteoprint create secret generic oracle-wallet \
+                      --from-file=/tmp/wallet \
+                      --dry-run=client -o yaml | kubectl apply -f -
             -   name: Helm deploy
                 run: |
                     helm upgrade --install meteoprint .infra/helm/meteoprint \
@@ -77,4 +86,5 @@ jobs:
                       --set externalDatabase.url="${{ secrets.DATABASE_URL }}" \
                       --set secrets.appSecret="${{ secrets.APP_SECRET }}" \
                       --set secrets.mercureJwtSecret="${{ secrets.MERCURE_JWT_SECRET }}" \
+                      --set oracleWallet.enabled=true \
                       --wait --rollback-on-failure --timeout 5m

@@ -18,3 +18,6 @@ data:
   MERCURE_PUBLIC_URL: {{ .Values.app.mercurePublicUrl | default (printf "https://%s/.well-known/mercure" .Values.host) | quote }}
   OPEN_METEO_BASE_URL: {{ .Values.app.openMeteoBaseUrl | quote }}
   DEFAULT_URI: {{ .Values.app.defaultUri | default (printf "https://%s" .Values.host) | quote }}
+  {{- if .Values.oracleWallet.enabled }}
+  TNS_ADMIN: {{ .Values.oracleWallet.mountPath | quote }}
+  {{- end }}
