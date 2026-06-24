@@ -74,7 +74,6 @@ jobs:
                     helm upgrade --install meteoprint .infra/helm/meteoprint \
                       --namespace meteoprint --create-namespace \
                       --set image.tag="${{ github.ref_name }}" \
-                      --set host="${{ vars.SERVER_NAME }}" \
                       --set externalDatabase.url="${{ secrets.DATABASE_URL }}" \
                       --set secrets.appSecret="${{ secrets.APP_SECRET }}" \
                       --set secrets.mercureJwtSecret="${{ secrets.MERCURE_JWT_SECRET }}" \
