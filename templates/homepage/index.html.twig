@@ -12,7 +12,11 @@
                 <p class="home__subtitle">{{ 'homepage.subtitle'|trans }}</p>
             </header>
 
-            {{ form_start(form, { attr: { class: 'home__form' } }) }}
+            {{ form_start(form, {attr: {
+                class: 'home__form',
+                'data-controller': 'auto-submit',
+                'data-action': 'change->auto-submit#submit',
+            }}) }}
                 <div class="home__field">{{ form_row(form.place) }}</div>
                 <button type="submit" class="home__submit">{{ 'homepage.submit'|trans }}</button>
             {{ form_end(form) }}
