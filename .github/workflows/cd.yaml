@@ -74,6 +74,9 @@ jobs:
                     echo "${{ secrets.ORACLE_WALLET_B64 }}" | base64 -d > /tmp/wallet.zip
                     mkdir -p /tmp/wallet
                     unzip -o /tmp/wallet.zip -d /tmp/wallet
+                    # Point the wallet at its in-pod mount path (default "?/network/admin"
+                    # resolves to ORACLE_HOME, empty in Instant Client → ORA-28759).
+                    sed -i 's#DIRECTORY="[^"]*"#DIRECTORY="/oracle/wallet"#' /tmp/wallet/sqlnet.ora
                     kubectl create namespace meteoprint --dry-run=client -o yaml | kubectl apply -f -
                     kubectl -n meteoprint create secret generic oracle-wallet \
                       --from-file=/tmp/wallet \
