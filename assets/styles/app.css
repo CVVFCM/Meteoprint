@@ -290,11 +290,18 @@ body {
         color: #000;
     }
 
-    /* Drop the page header (title, coords, back-home) and any links on paper. */
-    .forecast__head,
-    .forecast a,
+    /* Keep the place/spot name + coords on paper; drop the back link and live region. */
+    .forecast__back,
     turbo-mercure-stream-source {
         display: none;
+    }
+
+    .forecast__head {
+        margin-bottom: 4mm;
+    }
+
+    .forecast__head h1 {
+        font-size: 1.4rem;
     }
 
     /* Fill exactly one page (height relative to the page box, not 100vh which overflows)

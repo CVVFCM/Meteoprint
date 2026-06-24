@@ -22,7 +22,7 @@
 {% block meta_robots %}{% if spot is not null %}index,follow{% else %}noindex,follow{% endif %}{% endblock %}
 
 {% block body %}
-    {% set mercureOptions = { subscribe: [topic] } %}
+    {% set mercureOptions = { subscribe: ['*'] } %}
     {% if lastEventId %}{% set mercureOptions = mercureOptions|merge({ lastEventId: lastEventId }) %}{% endif %}
     <turbo-mercure-stream-source src="{{ mercure(topic, mercureOptions) }}"></turbo-mercure-stream-source>
 
@@ -30,6 +30,9 @@
         <header class="forecast__head">
             {% if spot is not null %}
                 <h1 class="forecast__spot">{{ spot.name }}</h1>
+                <p class="forecast__title">{{ 'forecast.title'|trans }}</p>
+            {% elseif address %}
+                <h1 class="forecast__spot">{{ address }}</h1>
                 <p class="forecast__title">{{ 'forecast.title'|trans }}</p>
             {% else %}
                 <h1>{{ 'forecast.title'|trans }}</h1>

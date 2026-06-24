@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Geocoding\LocationLabel;
 use App\PlaceSearch\PlaceSelection;
 use App\Repository\SpotRepository;
 use Geocoder\Exception\Exception as GeocoderException;
-use Geocoder\Location;
 use Geocoder\ProviderAggregator;
 use Geocoder\Query\GeocodeQuery;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -109,32 +109,11 @@ final readonly class GeocodeController
 
             $options[] = [
                 'value' => \sprintf('%.2f,%.2f', $coordinates->getLatitude(), $coordinates->getLongitude()),
-                'text' => self::label($location),
+                'text' => LocationLabel::format($location),
                 'group_by' => [$group],
             ];
         }
 
         return $options;
-    }
-
-    private static function label(Location $location): string
-    {
-        $adminLevels = $location->getAdminLevels();
-
-        $parts = array_filter([
-            $location->getLocality(),
-            $adminLevels->count() > 0 ? $adminLevels->first()->getName() : null,
-            $location->getCountry()?->getName(),
-        ], static fn (?string $part): bool => null !== $part && '' !== $part);
-
-        if ([] === $parts) {
-            $coordinates = $location->getCoordinates();
-
-            return null !== $coordinates
-                ? \sprintf('%.4f, %.4f', $coordinates->getLatitude(), $coordinates->getLongitude())
-                : '';
-        }
-
-        return implode(', ', $parts);
     }
 }
