@@ -5,15 +5,17 @@
 {% block canonical_url %}{{ absolute_url(path('homepage')) }}{% endblock %}
 
 {% block body %}
-    <main>
-        <header>
-            <h1>{{ 'homepage.title'|trans }}</h1>
-            <p>{{ 'homepage.subtitle'|trans }}</p>
-        </header>
+    <main class="home">
+        <section class="home__hero">
+            <header class="home__intro">
+                <h1 class="home__title">{{ 'homepage.title'|trans }}</h1>
+                <p class="home__subtitle">{{ 'homepage.subtitle'|trans }}</p>
+            </header>
 
-        {{ form_start(form) }}
-            {{ form_row(form.place) }}
-            <button type="submit">{{ 'homepage.submit'|trans }}</button>
-        {{ form_end(form) }}
+            {{ form_start(form, { attr: { class: 'home__form' } }) }}
+                <div class="home__field">{{ form_row(form.place) }}</div>
+                <button type="submit" class="home__submit">{{ 'homepage.submit'|trans }}</button>
+            {{ form_end(form) }}
+        </section>
     </main>
 {% endblock %}

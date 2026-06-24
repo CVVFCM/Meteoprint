@@ -22,7 +22,9 @@
 {% block meta_robots %}{% if spot is not null %}index,follow{% else %}noindex,follow{% endif %}{% endblock %}
 
 {% block body %}
-    <turbo-mercure-stream-source src="{{ mercure(topic, lastEventId ? {lastEventId: lastEventId} : {}) }}"></turbo-mercure-stream-source>
+    {% set mercureOptions = { subscribe: [topic] } %}
+    {% if lastEventId %}{% set mercureOptions = mercureOptions|merge({ lastEventId: lastEventId }) %}{% endif %}
+    <turbo-mercure-stream-source src="{{ mercure(topic, mercureOptions) }}"></turbo-mercure-stream-source>
 
     <main class="forecast">
         <header class="forecast__head">
