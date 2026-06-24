@@ -44,7 +44,10 @@ final readonly class ForecastPageRenderer
             round($rawPosition->longitude, self::PRECISION),
         );
         $topic = ForecastChannel::topic($position);
-        $now = $this->clock->now();
+        // Anchor the calendar day in UTC: the day drives the Mercure/Turbo target id
+        // ("forecast-day-Ymd"), which must match between this request and the worker
+        // regardless of either process's default timezone.
+        $now = $this->clock->now()->setTimezone(new \DateTimeZone('UTC'));
         $today = $now->setTime(0, 0);
 
         $lastEventId = $this->hub->publish(new Update(

@@ -45,7 +45,9 @@ final readonly class FetchForecastHandler
     public function __invoke(FetchForecast $message): void
     {
         $position = $message->position;
-        $day = $message->day;
+        // Normalize to UTC so the persisted day and the Turbo target id are stable
+        // regardless of how the message's date survived transport (de)serialization.
+        $day = $message->day->setTimezone(new \DateTimeZone('UTC'));
         $date = $day->format('Y-m-d');
 
         $request = (new ForecastRequest($position->latitude, $position->longitude))
@@ -114,7 +116,7 @@ final readonly class FetchForecastHandler
             );
         }
 
-        $now = $this->clock->now();
+        $now = $this->clock->now()->setTimezone(new \DateTimeZone('UTC'));
         $forecast = $this->repository->findOneForDay($position, $day);
 
         if (null === $forecast) {

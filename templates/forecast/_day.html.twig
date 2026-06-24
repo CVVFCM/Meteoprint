@@ -1,8 +1,10 @@
-<section class="day" id="forecast-day-{{ day|date('Ymd') }}">
+<section class="day" id="forecast-day-{{ day|date('Ymd', 'UTC') }}">
     <h2 class="day__title">
         {{ label|trans({}, 'messages', 'fr') }}
-        {# Explicit locale: this partial is also rendered by the worker (no request context). #}
-        <span class="day__date">{{ day|format_date(pattern: 'EEEE d MMMM', locale: 'fr') }}</span>
+        {# Explicit locale + timezone: this partial is also rendered by the worker (no
+           request context). The id above keys the day in UTC (matches the Turbo target);
+           the date is shown in Europe/Paris for the reader. #}
+        <span class="day__date">{{ day|format_date(pattern: 'EEEE d MMMM', locale: 'fr', timezone: 'Europe/Paris') }}</span>
     </h2>
 
     {% if forecast is null %}
