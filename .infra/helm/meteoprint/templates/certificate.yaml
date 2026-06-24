@@ -1,0 +1,15 @@
+{{- if and .Values.gateway.tls.enabled .Values.gateway.tls.certManager.enabled }}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ include "meteoprint.fullname" . }}-tls
+  labels:
+    {{- include "meteoprint.labels" . | nindent 4 }}
+spec:
+  secretName: {{ .Values.gateway.tls.secretName }}
+  dnsNames:
+    - {{ .Values.host | quote }}
+  issuerRef:
+    name: {{ .Values.gateway.tls.certManager.issuerRef.name }}
+    kind: {{ .Values.gateway.tls.certManager.issuerRef.kind }}
+{{- end }}

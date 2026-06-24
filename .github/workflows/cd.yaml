@@ -85,6 +85,8 @@ jobs:
                       --set image.tag="${{ github.sha }}" \
                       --set postgresql.enabled=true \
                       --set postgresql.auth.existingSecret=meteoprint-pg-auth \
+                      --set gateway.tls.enabled=true \
+                      --set gateway.tls.certManager.enabled=true \
                       --set secrets.appSecret="${{ secrets.APP_SECRET }}" \
                       --set secrets.mercureJwtSecret="${{ secrets.MERCURE_JWT_SECRET }}" \
                       --wait --rollback-on-failure --timeout 5m

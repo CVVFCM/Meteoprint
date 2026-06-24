@@ -59,10 +59,18 @@ gateway:
   # immediately; HTTPS once tls.enabled). Set to "websecure" to pin HTTPS-only.
   sectionName: ""
   tls:
-    # Off by default → HTTP-only listener, no cert needed (terminate TLS upstream,
-    # e.g. Cloudflare). Enable once a TLS Secret exists (cert-manager).
+    # When true, adds the HTTPS (websecure) listener referencing secretName.
     enabled: false
     secretName: meteoprint-tls
+    # Issue secretName via a cert-manager Certificate CR. The referenced Issuer must
+    # already exist and be able to solve for this domain — given the node is private
+    # (behind Cloudflare/Tailscale), use a DNS-01 ClusterIssuer (e.g. Cloudflare),
+    # not HTTP-01.
+    certManager:
+      enabled: false
+      issuerRef:
+        name: letsencrypt-prod
+        kind: ClusterIssuer
 
 # Non-secret application configuration (rendered into a ConfigMap).
 app:
