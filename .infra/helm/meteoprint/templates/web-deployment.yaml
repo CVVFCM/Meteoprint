@@ -52,20 +52,20 @@ spec:
           {{- end }}
           startupProbe:
             httpGet:
-              path: /metrics
-              port: admin
+              path: /
+              port: http
             periodSeconds: 3
             failureThreshold: 20
           readinessProbe:
             httpGet:
-              path: /metrics
-              port: admin
+              path: /
+              port: http
             periodSeconds: 10
             timeoutSeconds: 5
           livenessProbe:
             httpGet:
-              path: /metrics
-              port: admin
+              path: /
+              port: http
             periodSeconds: 30
             timeoutSeconds: 10
             failureThreshold: 3
