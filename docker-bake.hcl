@@ -17,6 +17,8 @@ group "default" {
 target "app" {
     tags = [for t in split(",", TAGS) : "${IMAGE_PREFIX}app:${t}"]
 
+    platforms = ["linux/amd64", "linux/arm64"]
+
     args = {
         EXTERNAL_USER_ID = EXTERNAL_USER_ID
     }

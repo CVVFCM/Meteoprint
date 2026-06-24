@@ -1,0 +1,95 @@
+# Default values for meteoprint.
+
+image:
+  repository: cvvfcm/meteoprint-app
+  tag: latest
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+
+# FrankenPHP web server (serves the Symfony app and the Mercure hub).
+web:
+  replicaCount: 1
+  resources: {}
+    # requests:
+    #   cpu: 250m
+    #   memory: 256Mi
+    # limits:
+    #   memory: 512Mi
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+# Symfony Messenger consumer (php bin/console messenger:consume async).
+consumer:
+  replicaCount: 1
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+# Public hostname served by the app.
+host: meteoprint.cvvfcm.fr
+
+# Gateway API (Traefik on K3s). TLS terminates at the Gateway; FrankenPHP serves
+# plain HTTP on :80 inside the cluster.
+gateway:
+  # When true, the chart also renders a Traefik Gateway. Leave false to attach the
+  # HTTPRoute to a Gateway that already exists in the cluster.
+  create: false
+  # Existing Gateway the HTTPRoute attaches to.
+  name: traefik-gateway
+  # Defaults to the release namespace when empty.
+  namespace: ""
+  # Listener name on the Gateway to attach to (HTTPS listener).
+  sectionName: websecure
+  # Used only when create=true.
+  className: traefik
+  tls:
+    secretName: meteoprint-tls
+
+# Non-secret application configuration (rendered into a ConfigMap).
+app:
+  env: prod
+  debug: "false"
+  # ":80" → plain HTTP only; Caddy will not attempt auto-HTTPS (TLS is at the Gateway).
+  serverName: ":80"
+  # Internal URL the app publishes Mercure updates to.
+  mercureUrl: http://localhost/.well-known/mercure
+  # Public URL the browser connects to for Mercure. Empty → derived as
+  # https://<host>/.well-known/mercure.
+  mercurePublicUrl: ""
+  openMeteoBaseUrl: https://api.open-meteo.com
+  messengerTransportDsn: doctrine://default?auto_setup=0
+  # Base URL for URLs generated in CLI context. Empty → derived as https://<host>.
+  defaultUri: ""
+
+# External PostgreSQL. REQUIRED — no database is shipped in this chart.
+externalDatabase:
+  # Full Doctrine DSN, e.g.
+  #   postgresql://meteoprint:secret@db.internal:5432/meteoprint?serverVersion=18&charset=utf8
+  url: ""
+
+# Secret values. Supply via --set, a values.local.yaml, or a sealed-secret.
+secrets:
+  appSecret: ""
+  symfonyDecryptionSecret: ""
+  mercureJwtSecret: "!ChangeThisMercureHubJWTSecretKey!"
+
+# Database migration job (Helm pre-install/pre-upgrade hook).
+migrations:
+  enabled: true
+  resources: {}
+
+# Pod-level security context. The image bakes EXTERNAL_USER_ID (default 1000 =
+# www-data); keep runAsUser aligned with the build arg.
+podSecurityContext:
+  runAsUser: 1000
+  runAsGroup: 1000
+  fsGroup: 1000
+
+securityContext: {}
+
+serviceAccount:
+  create: false
+  name: ""

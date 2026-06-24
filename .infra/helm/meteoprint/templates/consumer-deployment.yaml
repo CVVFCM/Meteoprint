@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "meteoprint.fullname" . }}-consumer
+  labels:
+    {{- include "meteoprint.labels" . | nindent 4 }}
+    app.kubernetes.io/component: consumer
+spec:
+  replicas: {{ .Values.consumer.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "meteoprint.consumer.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "meteoprint.consumer.selectorLabels" . | nindent 8 }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.serviceAccount.name }}
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: consumer
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          command:
+            - php
+            - bin/console
+            - messenger:consume
+            - async
+            - --no-debug
+            - -vv
+          envFrom:
+            - configMapRef:
+                name: {{ include "meteoprint.fullname" . }}-config
+            - secretRef:
+                name: {{ include "meteoprint.fullname" . }}-secret
+          livenessProbe:
+            exec:
+              command: ["php", "-v"]
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 3
+          resources:
+            {{- toYaml .Values.consumer.resources | nindent 12 }}
+      {{- with .Values.consumer.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.consumer.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.consumer.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

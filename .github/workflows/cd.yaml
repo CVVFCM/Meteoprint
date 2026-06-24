@@ -20,7 +20,9 @@ jobs:
             packages: write
         steps:
             -   name: Checkout
-                uses: actions/checkout@v6
+                uses: actions/checkout@v7
+            -   name: Set up QEMU
+                uses: docker/setup-qemu-action@v4
             -   name: Set up Docker Buildx
                 uses: docker/setup-buildx-action@v4
             -   name: Docker login
@@ -52,77 +54,29 @@ jobs:
                         app.cache-from=type=gha,scope=app-main
                         app.cache-from=type=gha,scope=app-${{ github.ref_name }}
                         app.cache-to=type=gha,scope=app-${{ github.ref_name }},mode=max
-    provision-prod:
-        name: Provision PROD
-        runs-on: ubuntu-latest
-        permissions:
-            contents: read
-            id-token: write
-        env:
-            AWS_ACCESS_KEY_ID: ${{ secrets.SCW_ACCESS_KEY }}
-            AWS_SECRET_ACCESS_KEY: ${{ secrets.SCW_SECRET_KEY }}
-            SCW_ACCESS_KEY: ${{ secrets.SCW_ACCESS_KEY }}
-            SCW_SECRET_KEY: ${{ secrets.SCW_SECRET_KEY }}
-            TAILSCALE_OAUTH_CLIENT_ID: ${{ secrets.TAILSCALE_OAUTH_CLIENT_ID }}
-            TAILSCALE_OAUTH_CLIENT_SECRET: ${{ secrets.TAILSCALE_OAUTH_CLIENT_SECRET }}
-            CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-            GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-        steps:
-            -   name: Checkout
-                uses: actions/checkout@v6
-            -   name: Install OpenTofu
-                uses: opentofu/setup-opentofu@v2
-            -   name: Initialize OpenTofu
-                run: tofu -chdir=.infra/terraform init
-            -   name: Apply Terraform plan
-                run: tofu -chdir=.infra/terraform apply -auto-approve
-
     deploy-prod:
         name: Deploy to PROD
         runs-on: ubuntu-latest
-        needs: [ build, provision-prod ]
+        needs: [ build ]
         environment: PROD
-        env:
-            DOCKER_HOST: 'ssh://${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}'
-            APP_ENV: ${{ vars.APP_ENV }}
-            APP_SECRET: ${{ secrets.APP_SECRET }}
-            SSH_USER: ${{ secrets.SSH_USER }}
-            SSH_HOST: ${{ secrets.SSH_HOST }}
-            IMAGE_PREFIX: ${{ secrets.IMAGE_PREFIX }}
-            SERVER_NAME: ${{ vars.SERVER_NAME }}
-            APP_VERSION: ${{ github.ref_name }}
-            DATABASE_URL: ${{ secrets.DATABASE_URL }}
-            EXTERNAL_USER_ID: 33
         steps:
             -   name: Checkout
-                uses: actions/checkout@v6
-            -   name: Set up Docker Compose
-                uses: docker/setup-compose-action@v2
-                with:
-                    version: latest
-            -   name: Set up private key
-                run: mkdir -p ~/.ssh && echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
-            -   name: Connect to Tailscale
-                uses: tailscale/github-action@v4
-                with:
-                    oauth-client-id: ${{ secrets.TAILSCALE_OAUTH_CLIENT_ID }}
-                    oauth-secret: ${{ secrets.TAILSCALE_OAUTH_CLIENT_SECRET }}
-                    tags: tag:ci
-            -   name: Wait for instance ready
+                uses: actions/checkout@v7
+            -   name: Set up Helm
+                uses: azure/setup-helm@v5
+            -   name: Write kubeconfig
                 run: |
-                    for i in $(seq 1 30); do
-                      ssh -o BatchMode=yes -o ConnectTimeout=5 -o StrictHostKeyChecking=accept-new "$SSH_USER@$SSH_HOST" true && break
-                      [ "$i" -eq 30 ] && { echo "SSH jamais disponible"; exit 1; }
-                      sleep 10
-                    done
-                    ssh -o BatchMode=yes "$SSH_USER@$SSH_HOST" "cloud-init status --wait | grep -q 'status: done'"
-            -   name: Trust remote host
-                run: ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
-            -   name: Docker login
-                run: docker login -u cvvfcm -p ${{ secrets.REGISTRY_PASSWORD }}
-            -   name: Docker ps (healthcheck)
-                run: docker ps
-            -   name: Deploy to ${{ vars.TARGET_ENV }}
-                run: docker compose -p meteoprint -f compose.yaml up -d --pull always --wait php --wait consumer --force-recreate --no-build --remove-orphans || (docker compose logs && exit 1)
-            -   name: Prune server
-                run: docker system prune -f --all --volumes
+                    mkdir -p ~/.kube
+                    echo "${{ secrets.K3S_KUBECONFIG }}" > ~/.kube/config
+                    chmod 600 ~/.kube/config
+            -   name: Helm deploy
+                run: |
+                    helm upgrade --install meteoprint .infra/helm/meteoprint \
+                      --namespace meteoprint --create-namespace \
+                      --set image.tag="${{ github.ref_name }}" \
+                      --set host="${{ vars.SERVER_NAME }}" \
+                      --set externalDatabase.url="${{ secrets.DATABASE_URL }}" \
+                      --set secrets.appSecret="${{ secrets.APP_SECRET }}" \
+                      --set secrets.symfonyDecryptionSecret="${{ secrets.SYMFONY_DECRYPTION_SECRET }}" \
+                      --set secrets.mercureJwtSecret="${{ secrets.MERCURE_JWT_SECRET }}" \
+                      --wait --atomic --timeout 5m

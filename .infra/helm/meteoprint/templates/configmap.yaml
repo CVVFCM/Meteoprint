@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "meteoprint.fullname" . }}-config
+  labels:
+    {{- include "meteoprint.labels" . | nindent 4 }}
+data:
+  APP_ENV: {{ .Values.app.env | quote }}
+  APP_DEBUG: {{ .Values.app.debug | quote }}
+  SERVER_NAME: {{ .Values.app.serverName | quote }}
+  MESSENGER_TRANSPORT_DSN: {{ .Values.app.messengerTransportDsn | quote }}
+  MERCURE_URL: {{ .Values.app.mercureUrl | quote }}
+  MERCURE_PUBLIC_URL: {{ .Values.app.mercurePublicUrl | default (printf "https://%s/.well-known/mercure" .Values.host) | quote }}
+  OPEN_METEO_BASE_URL: {{ .Values.app.openMeteoBaseUrl | quote }}
+  DEFAULT_URI: {{ .Values.app.defaultUri | default (printf "https://%s" .Values.host) | quote }}

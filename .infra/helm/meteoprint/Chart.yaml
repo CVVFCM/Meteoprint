@@ -1,0 +1,16 @@
+apiVersion: v2
+name: meteoprint
+description: Printable weather reports — Symfony + FrankenPHP app (web + messenger consumer)
+type: application
+version: 0.1.0
+# Matches the application image, not the chart.
+appVersion: "latest"
+home: https://github.com/cvvfcm/meteoprint
+sources:
+  - https://github.com/cvvfcm/meteoprint
+maintainers:
+  - name: Yohan Giarelli
+    email: yohan@giarel.li
+# Requires the Gateway API CRDs (gateway.networking.k8s.io/v1) installed in the
+# cluster. K3s ships Traefik with Gateway API support; enable it if not already on.
+kubeVersion: ">=1.27.0-0"
