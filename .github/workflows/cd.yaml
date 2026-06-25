@@ -85,7 +85,7 @@ jobs:
                     key_file=/home/runner/.oci/key.pem
                     EOF
 
-                    echo "$OCI_API_KEY" > ~/.oci/key.pem
+                    printf "%s\n" "$OCI_API_KEY" > ~/.oci/key.pem
                     chmod 600 ~/.oci/config ~/.oci/key.pem
 
             -   name: Write kubeconfig
