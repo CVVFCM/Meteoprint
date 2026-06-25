@@ -24,6 +24,7 @@ runs:
             with:
                 version: latest
         -   name: Install mkcert & Generate SSL certificates
+            shell: bash
             run: |
                 sudo apt-get install libnss3-tools
                 wget -O mkcert https://dl.filippo.io/mkcert/latest?for=linux/amd64
@@ -39,6 +40,8 @@ runs:
                 key: composer-${{ hashFiles('composer.lock') }}
                 restore-keys: composer-
         -   name: Composer install
+            shell: bash
             run: docker compose run --rm php composer install
         -   name: Start services
+            shell: bash
             run: docker compose up --wait php --no-build || (docker compose logs && exit 1)
