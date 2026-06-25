@@ -67,8 +67,6 @@ jobs:
 
 
             -   name: Install & Configure OCI CLI
-                env:
-                    OCI_API_KEY: ${{ secrets.OCI_API_KEY }}
                 run: |
                     curl -L -O https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh
                     chmod +x install.sh
@@ -85,18 +83,9 @@ jobs:
                     key_file=/home/runner/.oci/key.pem
                     EOF
 
-                    cat << 'EOF' > ~/.oci/key_tmp.pem
+                    cat << 'EOF' > ~/.oci/key.pem
                     ${{ secrets.OCI_API_KEY }}
                     EOF
-
-                    if grep -q "BEGIN" ~/.oci/key_tmp.pem; then
-                      echo "Format PEM détecté, déplacement direct."
-                      mv ~/.oci/key_tmp.pem ~/.oci/key.pem
-                    else
-                      echo "Format Base64 détecté, décodage en cours."
-                      cat ~/.oci/key_tmp.pem | base64 -d > ~/.oci/key.pem
-                      rm -f ~/.oci/key_tmp.pem
-                    fi
 
                     chmod 600 ~/.oci/config ~/.oci/key.pem
 
