@@ -19,6 +19,12 @@ web:
     limits:
       cpu: 500m
       memory: 512Mi
+  # FrankenPHP sizes threads/workers from the HOST core count by default (it doesn't see
+  # the cgroup CPU limit) — on a big node that spawns far too many PHP workers and OOMs
+  # the memory limit. Pin small explicit counts that fit the resources above.
+  frankenphp:
+    numThreads: 4
+    numWorkers: 2
   nodeSelector: {}
   tolerations: []
   affinity: {}

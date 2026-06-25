@@ -76,11 +76,11 @@ final class ForecastControllerTest extends WebTestCase
         $crawler = $client->request('GET', '/forecast/48.85/2.35');
 
         self::assertResponseIsSuccessful();
-        self::assertCount(1, $crawler->filter('turbo-mercure-stream-source'));
-        self::assertSame(
-            'https://localhost/.well-known/mercure?topic=forecast%2F48.85%2F2.35',
-            (string) $crawler->filter('turbo-mercure-stream-source')->attr('src'),
-        );
+        // Fully fresh → static, cacheable page: no live stream source, public TTL.
+        self::assertCount(0, $crawler->filter('turbo-mercure-stream-source'));
+        $cacheControl = (string) $client->getResponse()->headers->get('Cache-Control');
+        self::assertStringContainsString('public', $cacheControl);
+        self::assertGreaterThan(0, $client->getResponse()->getMaxAge());
         self::assertCount(0, $crawler->filter('.day__loading'));
         $weatherLabels = array_map(
             $this->normalizeText(...),
@@ -118,10 +118,11 @@ final class ForecastControllerTest extends WebTestCase
 
         self::assertResponseIsSuccessful();
         self::assertSame('CNHS', trim($crawler->filter('.forecast__spot')->text()));
-        self::assertSame(
-            'https://localhost/.well-known/mercure?topic=forecast%2F48.86%2F2.35',
-            (string) $crawler->filter('turbo-mercure-stream-source')->attr('src'),
-        );
+        // Fully fresh forecast → static, cacheable page: no live stream, public TTL.
+        self::assertCount(0, $crawler->filter('turbo-mercure-stream-source'));
+        $cacheControl = (string) $client->getResponse()->headers->get('Cache-Control');
+        self::assertStringContainsString('public', $cacheControl);
+        self::assertGreaterThan(0, $client->getResponse()->getMaxAge());
         self::assertStringContainsString('CNHS', trim($crawler->filter('title')->text()));
         self::assertStringContainsString('Meteoprint', trim($crawler->filter('title')->text()));
         self::assertStringContainsString('CNHS', (string) $crawler->filter('meta[name="description"]')->attr('content'));

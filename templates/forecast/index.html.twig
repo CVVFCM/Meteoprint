@@ -22,12 +22,14 @@
 {% block meta_robots %}{% if spot is not null %}index,follow{% else %}noindex,follow{% endif %}{% endblock %}
 
 {% block body %}
-    {# Mint the subscriber-authorization cookie scoped to this stream. Done here (not the
-       layout) so it only runs on real, public-host requests — health probes and other
-       internal hosts would trip Mercure's same-domain cookie check. #}
-    {% set mercureOptions = {subscribe: ['*']} %}
-    {% if lastEventId %}{% set mercureOptions = mercureOptions|merge({lastEventId: lastEventId}) %}{% endif %}
-    <turbo-mercure-stream-source src="{{ mercure(topic, mercureOptions) }}"></turbo-mercure-stream-source>
+    {% if live %}
+        {# Only while a fetch is pending. Minting the subscriber cookie (mercure(...))
+           sets a Set-Cookie header, so a fully fresh page omits it and stays cacheable.
+           Scoped here (not the layout) so it runs only on real public-host requests. #}
+        {% set mercureOptions = {subscribe: ['*']} %}
+        {% if lastEventId %}{% set mercureOptions = mercureOptions|merge({lastEventId: lastEventId}) %}{% endif %}
+        <turbo-mercure-stream-source src="{{ mercure(topic, mercureOptions) }}"></turbo-mercure-stream-source>
+    {% endif %}
 
     <main class="forecast">
         <header class="forecast__head">

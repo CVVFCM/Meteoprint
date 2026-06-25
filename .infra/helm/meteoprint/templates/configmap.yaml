@@ -13,3 +13,7 @@ data:
   MERCURE_PUBLIC_URL: {{ .Values.app.mercurePublicUrl | default (printf "https://%s/.well-known/mercure" .Values.host) | quote }}
   OPEN_METEO_BASE_URL: {{ .Values.app.openMeteoBaseUrl | quote }}
   DEFAULT_URI: {{ .Values.app.defaultUri | default (printf "https://%s" .Values.host) | quote }}
+  # Bound FrankenPHP threads/workers (it otherwise sizes from the host core count and
+  # OOMs the pod's memory limit). CLI pods (consumer, migrate) ignore these.
+  FRANKENPHP_CONFIG: {{ printf "num_threads %d" (.Values.web.frankenphp.numThreads | int) | quote }}
+  FRANKENPHP_WORKER_CONFIG: {{ printf "num %d" (.Values.web.frankenphp.numWorkers | int) | quote }}

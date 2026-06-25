@@ -69,6 +69,14 @@ class Forecast
     }
 
     /**
+     * The instant this forecast becomes stale (generatedAt + STALE_AFTER).
+     */
+    public function staleAt(): \DateTimeImmutable
+    {
+        return $this->generatedAt->add(new \DateInterval(self::STALE_AFTER));
+    }
+
+    /**
      * @param list<ForecastSlot> $slots
      */
     public static function create(Geo $position, \DateTimeImmutable $day, array $slots, \DateTimeImmutable $generatedAt): self

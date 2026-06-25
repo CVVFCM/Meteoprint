@@ -48,6 +48,7 @@ final readonly class ForecastPageRenderer
         $today = $now->setTime(0, 0);
         $lastEventId = null;
         $dispatchedFetch = false;
+        $staleAt = null;
 
         $days = [];
         foreach ([$today, $today->modify('+1 day')] as $day) {
@@ -68,22 +69,45 @@ final readonly class ForecastPageRenderer
                 }
 
                 $this->bus->dispatch(new FetchForecast($position, $day));
+            } else {
+                // Track the earliest staleness deadline across the displayed days.
+                $deadline = $forecast->staleAt();
+                if (null === $staleAt || $deadline < $staleAt) {
+                    $staleAt = $deadline;
+                }
             }
 
             $days[] = ['day' => $day, 'forecast' => $forecast];
         }
 
+        // Live (Mercure stream + auth cookie) only while a fetch is pending; a fully
+        // fresh page is static for the rest of its freshness window.
+        $live = $dispatchedFetch;
+
         $address = null === $spot
             ? $this->reverseGeocoder->address($position, $this->localeSwitcher->getLocale())
             : null;
 
-        return new Response($this->twig->render('forecast/index.html.twig', [
+        $response = new Response($this->twig->render('forecast/index.html.twig', [
             'address' => $address,
             'days' => $days,
             'lastEventId' => $lastEventId,
+            'live' => $live,
             'position' => $position,
             'spot' => $spot,
             'topic' => $topic,
         ]));
+
+        // Cache only when fully fresh (no loading state, no Set-Cookie from the stream):
+        // public for the remaining freshness window, so Souin serves it until the
+        // forecast goes stale (≤ 1 h after it was fetched).
+        if (!$live && null !== $staleAt) {
+            $maxAge = max(0, $staleAt->getTimestamp() - $now->getTimestamp());
+            $response->setPublic();
+            $response->setMaxAge($maxAge);
+            $response->setSharedMaxAge($maxAge);
+        }
+
+        return $response;
     }
 }
