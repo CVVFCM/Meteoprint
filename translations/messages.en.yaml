@@ -50,6 +50,7 @@ forecast:
     loading: Fetching the forecast…
     knots: kn
     gusts: gust
+    footer: 'Generated with Meteoprint (meteoprint.cvvfcm.fr)'
     slot:
         0: Night
         9: Morning

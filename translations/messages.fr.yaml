@@ -50,6 +50,7 @@ forecast:
     loading: Récupération de la météo…
     knots: nds
     gusts: raf.
+    footer: 'Généré avec Meteoprint (meteoprint.cvvfcm.fr)'
     slot:
         0: Nuit
         9: Matin

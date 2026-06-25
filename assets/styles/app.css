@@ -522,6 +522,10 @@ body {
     margin: 0;
 }
 
+.forecast__print-footer {
+    display: none;
+}
+
 @media print {
     html,
     body {
@@ -532,6 +536,8 @@ body {
     body {
         background: #fff;
         color: #000;
+        font-family: "DejaVu Sans", Arial, sans-serif;
+        font-size: 12pt;
     }
 
     /* Keep the place/spot name + coords on paper; drop the back link and live region. */
@@ -548,7 +554,7 @@ body {
     }
 
     .forecast__head h1 {
-        font-size: 1.4rem;
+        font-size: 18pt;
         background: none;
         color: #000;
     }
@@ -560,9 +566,7 @@ body {
         height: 100%;
         margin: 0;
         padding: 10mm;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
+        display: block;
         overflow: hidden;
     }
 
@@ -585,5 +589,25 @@ body {
 
     .slot__icon {
         filter: none;
+    }
+
+    .forecast__print-footer {
+        position: absolute;
+        bottom: 5mm;
+        right: 5mm;
+        display: flex;
+        align-items: center;
+        gap: 4pt;
+        opacity: 0.7;
+    }
+
+    .forecast__print-footer-text {
+        font-size: 8pt;
+        color: #000;
+    }
+
+    .forecast__print-footer-logo {
+        width: 16pt;
+        height: 16pt;
     }
 }
