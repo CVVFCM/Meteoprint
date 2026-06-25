@@ -32,6 +32,8 @@ jobs:
     playwright:
         name: Tests Playwright / Screenshots
         runs-on: ubuntu-latest
+        env:
+            EXTERNAL_USER_ID: 1001
         steps:
             - uses: actions/checkout@v4
             - uses: ./.github/workflows/actions/run-docker-services/
