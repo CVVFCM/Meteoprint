@@ -6,14 +6,14 @@ test.describe('Printable forecast view', () => {
         await page.goto('https://localhost/forecast/cvvfcm');
         await page.emulateMedia({media: 'print'});
 
+        await page.waitForSelector('.slot__icon');
+
         await expect(page).toHaveScreenshot(
             'forecast-print-cvvfcm.png',
             {
                 mask: [
-                    page.locator('.slot__weather'),
-                    page.locator('.slot__temp'),
-                    page.locator('.slot__wind'),
-                ]
+                    page.locator('.slot'),
+                ],
             },
         );
     });

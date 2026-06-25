@@ -56,7 +56,7 @@ first_run: .infra/docker/tls/cert.pem pull build vendor/ up reset assets/vendor
 .PHONY: clean
 clean: ## Stop the containers and remove all the data
 	$(DOCKER_COMPOSE) down -v
-	rm -rf .configured .infra/docker/tls/cert.pem public/assets assets/vendor public/bundles var/* vendor
+	rm -rf .configured .infra/docker/tls/cert.pem public/assets assets/vendor public/bundles var/* vendor test-results playwright-report node_modules
 
 .PHONY: cs
 cs: ## Fix code style
@@ -76,3 +76,11 @@ stan: vendor/
 .PHONY: mate
 mate: ## Run the mate command
 	@$(DOCKER_COMPOSE) exec php ./vendor/bin/mate serve --force-keep-alive
+
+node_modules/: ## Install node modules (Playwright stack)
+	@npx playwright install --with-deps
+	@npm install
+
+.PHONY: playwright
+playwright: node_modules/ ## Run the playwright tests
+	@npx playwright test
