@@ -14,6 +14,7 @@ homepage:
             places: Lieux
     intro:
         lead: Meteoprint génère un bulletin météo clair et imprimable, pour aujourd'hui et demain, sur n'importe quel lieu ou club FFVoile — pensé pour être affiché.
+    browse_departments: 'Parcourir les clubs par département'
     uses:
         title: Pour le comité de course
         body: Pendant une régate, le comité de course doit afficher la météo du jour au tableau officiel. Les sites météo grand public sont chargés et s'impriment mal. Meteoprint produit un bulletin propre au format A4 paysage — vent en nœuds, direction, rafales, par créneaux (matin, midi, après-midi, soir) — prêt à être imprimé et épinglé.
@@ -42,6 +43,7 @@ forecast:
     meta_description_spot: 'Bulletin météo imprimable pour %spot%, avec les prévisions d''aujourd''hui et de demain.'
     meta_description_coordinates: 'Bulletin météo imprimable pour les coordonnées %latitude%, %longitude%, avec les prévisions d''aujourd''hui et de demain.'
     coordinates: 'Coordonnées : %latitude%, %longitude%'
+    department_link: 'Voir les clubs du département %department%'
     back: Retour à l'accueil
     today: Aujourd'hui
     tomorrow: Demain
@@ -86,3 +88,19 @@ weather:
         95: Orage
         96: Orage avec grêle légère
         99: Orage avec grêle forte
+
+spot_directory:
+    title: 'Clubs FFVoile du département %department%'
+    meta_title: 'Clubs FFVoile du département %department% | Meteoprint'
+    meta_description: 'Liste des clubs FFVoile importés pour le département %department%, puis ouvrez leur bulletin météo imprimable.'
+    lead: 'Retrouvez les clubs FFVoile importés pour le département %department%, puis ouvrez leur bulletin météo imprimable.'
+    back: Retour à l'accueil
+
+spot_departments:
+    title: 'Clubs FFVoile par département'
+    meta_title: 'Clubs FFVoile par département | Meteoprint'
+    meta_description: 'Liste de tous les départements avec les clubs FFVoile importés, avec un lien vers leur bulletin météo imprimable.'
+    lead: 'Retrouvez les clubs FFVoile importés par département, puis ouvrez leur bulletin météo imprimable.'
+    back: Retour à l'accueil
+    department_label: '%name% (%code%)'
+    spot_count: '%count% club|%count% clubs'

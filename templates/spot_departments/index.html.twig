@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'spot_departments.meta_title'|trans }}{% endblock %}
+{% block meta_description %}{{ 'spot_departments.meta_description'|trans }}{% endblock %}
+{% block canonical_url %}{{ absolute_url(path('spot_departments')) }}{% endblock %}
+
+{% block body %}
+    <main class="spot-departments">
+        <header class="spot-departments__head">
+            <h1>{{ 'spot_departments.title'|trans }}</h1>
+            <p>{{ 'spot_departments.lead'|trans }}</p>
+            <a class="spot-departments__back" href="{{ path('homepage') }}">{{ 'spot_departments.back'|trans }}</a>
+        </header>
+
+        <ul class="spot-departments__list">
+            {% for department in departments %}
+                <li class="spot-departments__item">
+                    <a class="spot-departments__link" href="{{ path('spot_department', {department: department.code}) }}">{{ 'spot_departments.department_label'|trans({'%code%': department.code, '%name%': department.name}) }}</a>
+                    <span class="spot-departments__count">{{ 'spot_departments.spot_count'|trans({'%count%': department.count}) }}</span>
+                </li>
+            {% endfor %}
+        </ul>
+    </main>
+{% endblock %}

@@ -172,6 +172,7 @@ final readonly class FfvoileClubScraper
                     latitude: self::flt($record['latitude']),
                     longitude: self::flt($record['longitude']),
                     city: isset($record['city']) ? self::str($record['city']) : null,
+                    postcode: self::postcode($record['postalCode'] ?? null),
                 );
             }
         }
@@ -209,5 +210,19 @@ final readonly class FfvoileClubScraper
     private static function flt(mixed $value): float
     {
         return is_numeric($value) ? (float) $value : 0.0;
+    }
+
+    private static function postcode(mixed $value): ?string
+    {
+        if (!\is_scalar($value)) {
+            return null;
+        }
+
+        $postcode = preg_replace('/\s+/', '', trim((string) $value));
+        if (null === $postcode || 1 !== preg_match('/^\d{5}$/', $postcode)) {
+            return null;
+        }
+
+        return $postcode;
     }
 }

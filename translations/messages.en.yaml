@@ -14,6 +14,7 @@ homepage:
             places: Places
     intro:
         lead: Meteoprint generates a clean, printable weather report for today and tomorrow, for any place or FFVoile sailing club — made to be posted up.
+    browse_departments: 'Browse clubs by department'
     uses:
         title: For the race committee
         body: During a regatta, the race committee must post the day's weather on the official notice board. Consumer weather sites are cluttered and print poorly. Meteoprint outputs a clean A4 landscape report — wind in knots, direction, gusts, across day slots (morning, noon, afternoon, evening) — ready to print and pin up.
@@ -42,6 +43,7 @@ forecast:
     meta_description_spot: Printable weather report for %spot%, with today's and tomorrow's forecast.
     meta_description_coordinates: 'Printable weather report for coordinates %latitude%, %longitude%, with today''s and tomorrow''s forecast.'
     coordinates: 'Coordinates: %latitude%, %longitude%'
+    department_link: 'See clubs in department %department%'
     back: Back to home
     today: Today
     tomorrow: Tomorrow
@@ -86,3 +88,19 @@ weather:
         95: Thunderstorm
         96: Thunderstorm with slight hail
         99: Thunderstorm with heavy hail
+
+spot_directory:
+    title: 'FFVoile clubs in department %department%'
+    meta_title: 'FFVoile clubs in department %department% | Meteoprint'
+    meta_description: 'List of FFVoile clubs in department %department%, each with a link to its printable weather report.'
+    lead: 'Browse the imported FFVoile clubs for department %department%, then open each printable weather report.'
+    back: Back to home
+
+spot_departments:
+    title: 'FFVoile clubs by department'
+    meta_title: 'FFVoile clubs by department | Meteoprint'
+    meta_description: 'List of all departments with imported FFVoile clubs, each with a link to its printable weather report.'
+    lead: 'Browse imported FFVoile clubs by department, then open each printable weather report.'
+    back: Back to home
+    department_label: '%name% (%code%)'
+    spot_count: '%count% club|%count% clubs'

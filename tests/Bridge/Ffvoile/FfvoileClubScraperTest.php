@@ -28,9 +28,9 @@ final class FfvoileClubScraperTest extends TestCase
 
             if (str_contains($url, '/map/clubs/ids')) {
                 return self::json([
-                    ['id' => '08000', 'name' => 'CDV DES ARDENNES', 'latitude' => 49.752, 'longitude' => 4.731, 'city' => 'CHARLEVILLE MEZIERES'],
-                    ['id' => '08002', 'name' => 'CVVFCM', 'latitude' => 49.873, 'longitude' => 4.595, 'city' => 'VRESSE'],
-                    ['id' => '08007', 'name' => 'BAIRON NAUTIC CLUB', 'latitude' => 49.527, 'longitude' => 4.781, 'city' => 'LES AYVELLES'],
+                    ['id' => '08000', 'name' => 'CDV DES ARDENNES', 'latitude' => 49.752, 'longitude' => 4.731, 'city' => 'CHARLEVILLE MEZIERES', 'postalCode' => '08000'],
+                    ['id' => '08002', 'name' => 'CVVFCM', 'latitude' => 49.873, 'longitude' => 4.595, 'city' => 'VRESSE', 'postalCode' => '08170'],
+                    ['id' => '08007', 'name' => 'BAIRON NAUTIC CLUB', 'latitude' => 49.527, 'longitude' => 4.781, 'city' => 'LES AYVELLES', 'postalCode' => '08000'],
                 ]);
             }
 
@@ -45,6 +45,7 @@ final class FfvoileClubScraperTest extends TestCase
         self::assertSame(49.752, $clubs[0]->latitude);
         self::assertSame(4.731, $clubs[0]->longitude);
         self::assertSame('CHARLEVILLE MEZIERES', $clubs[0]->city);
+        self::assertSame('08000', $clubs[0]->postcode);
     }
 
     public function testUnknownDepartmentYieldsNoClubs(): void

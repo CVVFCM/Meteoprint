@@ -31,8 +31,15 @@ final readonly class SitemapController
             fn (Spot $spot): string => $this->urlGenerator->generate('forecast_spot', ['slug' => $spot->slug], UrlGeneratorInterface::ABSOLUTE_URL),
             $this->spots->findAllOrderedBySlug(),
         );
+        /** @var list<string> $departmentUrls */
+        $departmentUrls = array_map(
+            fn (string $department): string => $this->urlGenerator->generate('spot_department', ['department' => $department], UrlGeneratorInterface::ABSOLUTE_URL),
+            $this->spots->findAllDepartmentCodes(),
+        );
 
         $response = new Response($this->twig->render('seo/sitemap.xml.twig', [
+            'departmentListUrl' => $this->urlGenerator->generate('spot_departments', [], UrlGeneratorInterface::ABSOLUTE_URL),
+            'departmentUrls' => $departmentUrls,
             'homepageUrl' => $this->urlGenerator->generate('homepage', [], UrlGeneratorInterface::ABSOLUTE_URL),
             'spotUrls' => $spotUrls,
         ]));

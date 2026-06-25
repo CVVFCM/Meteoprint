@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'spot_directory.meta_title'|trans({'%department%': department}) }}{% endblock %}
+{% block meta_description %}{{ 'spot_directory.meta_description'|trans({'%department%': department}) }}{% endblock %}
+{% block canonical_url %}{{ absolute_url(path('spot_department', {department: department})) }}{% endblock %}
+
+{% block body %}
+    <main class="spot-directory">
+        <header class="spot-directory__head">
+            <h1>{{ 'spot_directory.title'|trans({'%department%': department}) }}</h1>
+            <p>{{ 'spot_directory.lead'|trans({'%department%': department}) }}</p>
+            <a class="spot-directory__back" href="{{ path('homepage') }}">{{ 'spot_directory.back'|trans }}</a>
+        </header>
+
+        <ul class="spot-directory__list">
+            {% for spot in spots %}
+                <li class="spot-directory__item">
+                    <a class="spot-directory__link" href="{{ path('forecast_spot', {slug: spot.slug}) }}">{{ spot.name }}</a>
+                    {% if spot.postcode %}
+                        <span class="spot-directory__postcode">{{ spot.postcode }}</span>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    </main>
+{% endblock %}

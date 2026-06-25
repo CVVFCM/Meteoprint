@@ -42,16 +42,16 @@ final class GeocodeControllerTest extends WebTestCase
         $this->clearSpots();
 
         $em = static::getContainer()->get(EntityManagerInterface::class);
-        $em->persist(Spot::create('Paris Voile', 'paris-voile', new Geo(48.85, 2.35), SpotType::FFV_CLUB));
+        $em->persist(Spot::create('CNHS', 'cnhs', new Geo(48.85, 2.35), SpotType::FFV_CLUB, postcode: '75004'));
         $em->flush();
 
         $this->stubGeocoder();
-        $client->request('GET', '/geocode', ['query' => 'Paris']);
+        $client->request('GET', '/geocode', ['query' => 'CNH']);
 
         $data = $this->decode($client->getResponse()->getContent());
 
         self::assertSame([
-            ['value' => 'spot:paris-voile', 'text' => 'Paris Voile', 'group_by' => ['Clubs FFVoile']],
+            ['value' => 'spot:cnhs', 'text' => 'CNHS', 'group_by' => ['Clubs FFVoile']],
             ['value' => '48.86,2.35', 'text' => 'Paris, Île-de-France, France', 'group_by' => ['Lieux']],
         ], $data['results']['options']);
         self::assertSame([

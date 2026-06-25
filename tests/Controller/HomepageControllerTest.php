@@ -45,12 +45,13 @@ final class HomepageControllerTest extends WebTestCase
 
         $em = static::getContainer()->get(EntityManagerInterface::class);
         $em->createQuery('DELETE FROM '.Spot::class)->execute();
-        $em->persist(Spot::create('Paris Voile', 'paris-voile', new Geo(48.85, 2.35), SpotType::FFV_CLUB));
+        $em->persist(Spot::create('CVVFCM', 'cvvfcm', new Geo(49.87, 4.60), SpotType::FFV_CLUB, postcode: '08170'));
+        $em->persist(Spot::create('CNHS', 'cnhs', new Geo(48.85, 2.35), SpotType::FFV_CLUB, postcode: '75004'));
         $em->flush();
 
-        $client->request('GET', '/', ['place_search' => ['place' => 'spot:paris-voile']]);
+        $client->request('GET', '/', ['place_search' => ['place' => 'spot:cvvfcm']]);
 
-        self::assertResponseRedirects('/forecast/paris-voile');
+        self::assertResponseRedirects('/forecast/cvvfcm');
     }
 
     public function testInvalidSelectionDoesNotRedirect(): void

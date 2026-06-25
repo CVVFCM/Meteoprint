@@ -46,6 +46,12 @@ body {
     color: var(--ink);
 }
 
+.forecast__directory {
+    display: inline-block;
+    margin-top: 0.5rem;
+    color: var(--accent);
+}
+
 .forecast__grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -277,6 +283,20 @@ body {
     text-wrap: pretty;
 }
 
+.home__browse {
+    margin: 0 0 2rem;
+}
+
+.home__browse a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.home__browse a:hover {
+    text-decoration: underline;
+}
+
 .home__block {
     margin: 0 0 2rem;
 }
@@ -314,6 +334,141 @@ body {
     color: var(--muted);
 }
 
+.spot-departments {
+    max-width: 48rem;
+    margin: 0 auto;
+    padding: 2rem 1rem 4rem;
+}
+
+.spot-departments__head {
+    margin-bottom: 1.5rem;
+}
+
+.spot-departments__head h1 {
+    margin: 0 0 0.5rem;
+    font-size: 2rem;
+}
+
+.spot-departments__head p {
+    margin: 0;
+    color: var(--muted);
+}
+
+.spot-departments__back {
+    display: inline-block;
+    margin-top: 0.75rem;
+    color: var(--ink);
+}
+
+.spot-departments__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.75rem;
+}
+
+.spot-departments__item {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: baseline;
+    padding: 1rem 1.25rem;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 0.75rem;
+    transition: box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.spot-departments__item:hover {
+    border-color: var(--accent);
+    box-shadow: 0 4px 12px -4px rgb(20 33 61 / 15%);
+}
+
+.spot-departments__link {
+    color: var(--ink);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.spot-departments__link:hover {
+    color: var(--accent);
+}
+
+.spot-departments__count {
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    font-size: 0.95rem;
+}
+
+.spot-directory {
+    max-width: 48rem;
+    margin: 0 auto;
+    padding: 2rem 1rem 4rem;
+}
+
+.spot-directory__head {
+    margin-bottom: 1.5rem;
+}
+
+.spot-directory__head h1 {
+    margin: 0 0 0.5rem;
+    font-size: 2rem;
+}
+
+.spot-directory__head p {
+    margin: 0;
+    color: var(--muted);
+}
+
+.spot-directory__back {
+    display: inline-block;
+    margin-top: 0.75rem;
+    color: var(--ink);
+}
+
+.spot-directory__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.75rem;
+}
+
+.spot-directory__item {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: baseline;
+    padding: 1rem 1.25rem;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 0.75rem;
+    transition: box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.spot-directory__item:hover {
+    border-color: var(--accent);
+    box-shadow: 0 4px 12px -4px rgb(20 33 61 / 15%);
+}
+
+.spot-directory__link {
+    color: var(--ink);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.spot-directory__link:hover {
+    color: var(--accent);
+}
+
+.spot-directory__postcode {
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
 @media (width <= 40rem) {
     .forecast__grid {
         grid-template-columns: 1fr;
@@ -325,6 +480,12 @@ body {
 
     .home__submit {
         width: 100%;
+    }
+
+    .spot-departments__item,
+    .spot-directory__item {
+        flex-direction: column;
+        align-items: flex-start;
     }
 }
 

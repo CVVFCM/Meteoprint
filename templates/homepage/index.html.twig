@@ -24,6 +24,9 @@
 
         <section class="home__content">
             <p class="home__lead">{{ 'homepage.intro.lead'|trans }}</p>
+            <p class="home__browse">
+                <a href="{{ path('spot_departments') }}">{{ 'homepage.browse_departments'|trans }}</a>
+            </p>
 
             <article class="home__block">
                 <h2>{{ 'homepage.uses.title'|trans }}</h2>
@@ -71,7 +74,7 @@
                 mainEntity: [1, 2, 3]|map(i => {
                     '@type': 'Question',
                     name: ('homepage.faq.q' ~ i)|trans,
-                    acceptedAnswer: { '@type': 'Answer', text: ('homepage.faq.a' ~ i)|trans },
+                    acceptedAnswer: {'@type': 'Answer', text: ('homepage.faq.a' ~ i)|trans},
                 }),
             },
         ],

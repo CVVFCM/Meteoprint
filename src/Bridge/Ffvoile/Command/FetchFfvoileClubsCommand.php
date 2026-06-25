@@ -68,13 +68,14 @@ final class FetchFfvoileClubsCommand extends Command
         usort($clubs, static fn (Club $a, Club $b): int => $a->name <=> $b->name);
 
         $io->table(
-            ['Id', 'Name', 'Latitude', 'Longitude', 'City'],
+            ['Id', 'Name', 'Latitude', 'Longitude', 'City', 'Postcode'],
             array_map(static fn (Club $c): array => [
                 $c->id,
                 $c->name,
                 \sprintf('%.5f', $c->latitude),
                 \sprintf('%.5f', $c->longitude),
                 $c->city ?? '',
+                $c->postcode ?? '',
             ], $clubs),
         );
 
@@ -121,7 +122,7 @@ final class FetchFfvoileClubsCommand extends Command
                     fn (string $candidate): bool => isset($used[$candidate]) || isset($existingSlugs[$candidate]),
                 );
                 $used[$newSlug] = true;
-                $existing->update($club->name, new Geo($club->latitude, $club->longitude), $newSlug);
+                $existing->update($club->name, new Geo($club->latitude, $club->longitude), $newSlug, $club->postcode);
             } else {
                 $slug = $this->slugGenerator->generate(
                     $club->name,
@@ -135,6 +136,7 @@ final class FetchFfvoileClubsCommand extends Command
                     new Geo($club->latitude, $club->longitude),
                     SpotType::FFV_CLUB,
                     new FFVClubId($club->id),
+                    $club->postcode,
                 ));
             }
 
@@ -184,9 +186,9 @@ final class FetchFfvoileClubsCommand extends Command
             if (false === $handle) {
                 throw new \RuntimeException(\sprintf('Cannot write to "%s".', $path));
             }
-            fputcsv($handle, ['id', 'name', 'latitude', 'longitude', 'city'], escape: '');
+            fputcsv($handle, ['id', 'name', 'latitude', 'longitude', 'city', 'postcode'], escape: '');
             foreach ($clubs as $c) {
-                fputcsv($handle, [$c->id, $c->name, $c->latitude, $c->longitude, $c->city], escape: '');
+                fputcsv($handle, [$c->id, $c->name, $c->latitude, $c->longitude, $c->city, $c->postcode], escape: '');
             }
             fclose($handle);
 

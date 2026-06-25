@@ -3,9 +3,17 @@
     <url>
         <loc>{{ homepageUrl }}</loc>
     </url>
+    <url>
+        <loc>{{ departmentListUrl }}</loc>
+    </url>
     {% for spotUrl in spotUrls %}
         <url>
             <loc>{{ spotUrl }}</loc>
+        </url>
+    {% endfor %}
+    {% for departmentUrl in departmentUrls %}
+        <url>
+            <loc>{{ departmentUrl }}</loc>
         </url>
     {% endfor %}
 </urlset>

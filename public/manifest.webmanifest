@@ -1,7 +1,7 @@
 {
     "name": "Meteoprint",
     "short_name": "Meteoprint",
-    "description": "Bulletin météo imprimable pour la voile et les régates, pensé pour le comité de course.",
+    "description": "Bulletin météo imprimable pour la voile et les régates, pensé pour les comités de courses.",
     "lang": "fr",
     "dir": "ltr",
     "start_url": "/",

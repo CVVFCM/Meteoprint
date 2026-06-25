@@ -15,6 +15,7 @@ final readonly class Club
         public float $latitude,
         public float $longitude,
         public ?string $city = null,
+        public ?string $postcode = null,
     ) {
     }
 }

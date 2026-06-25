@@ -111,25 +111,26 @@ final class ForecastControllerTest extends WebTestCase
         $repository->save(Forecast::create($position, new \DateTimeImmutable('today'), $this->slots(), $generatedAt));
         $repository->save(Forecast::create($position, new \DateTimeImmutable('tomorrow'), $this->slots(), $generatedAt));
 
-        $em->persist(Spot::create('Paris Voile', 'paris-voile', new Geo(48.8566, 2.3522), SpotType::FFV_CLUB));
+        $em->persist(Spot::create('CNHS', 'cnhs', new Geo(48.8566, 2.3522), SpotType::FFV_CLUB, postcode: '75004'));
         $em->flush();
 
-        $crawler = $client->request('GET', '/forecast/paris-voile');
+        $crawler = $client->request('GET', '/forecast/cnhs');
 
         self::assertResponseIsSuccessful();
-        self::assertSame('Paris Voile', trim($crawler->filter('.forecast__spot')->text()));
+        self::assertSame('CNHS', trim($crawler->filter('.forecast__spot')->text()));
         self::assertSame(
             'https://localhost/.well-known/mercure?topic=forecast%2F48.86%2F2.35',
             (string) $crawler->filter('turbo-mercure-stream-source')->attr('src'),
         );
-        self::assertStringContainsString('Paris Voile', trim($crawler->filter('title')->text()));
+        self::assertStringContainsString('CNHS', trim($crawler->filter('title')->text()));
         self::assertStringContainsString('Meteoprint', trim($crawler->filter('title')->text()));
-        self::assertStringContainsString('Paris Voile', (string) $crawler->filter('meta[name="description"]')->attr('content'));
+        self::assertStringContainsString('CNHS', (string) $crawler->filter('meta[name="description"]')->attr('content'));
         self::assertSame('index,follow', (string) $crawler->filter('meta[name="robots"]')->attr('content'));
-        self::assertSame('http://localhost/forecast/paris-voile', (string) $crawler->filter('link[rel="canonical"]')->attr('href'));
-        self::assertSame('http://localhost/forecast/paris-voile', (string) $crawler->filter('meta[property="og:url"]')->attr('content'));
-        self::assertStringContainsString('Paris Voile', (string) $crawler->filter('meta[property="og:title"]')->attr('content'));
+        self::assertSame('http://localhost/forecast/cnhs', (string) $crawler->filter('link[rel="canonical"]')->attr('href'));
+        self::assertSame('http://localhost/forecast/cnhs', (string) $crawler->filter('meta[property="og:url"]')->attr('content'));
+        self::assertStringContainsString('CNHS', (string) $crawler->filter('meta[property="og:title"]')->attr('content'));
         self::assertStringContainsString('Meteoprint', (string) $crawler->filter('meta[property="og:title"]')->attr('content'));
+        self::assertSame('/spots/departement/75', (string) $crawler->filter('.forecast__directory')->attr('href'));
         self::assertCount(0, $crawler->filter('.day__loading'));
         $weatherLabels = array_map(
             $this->normalizeText(...),

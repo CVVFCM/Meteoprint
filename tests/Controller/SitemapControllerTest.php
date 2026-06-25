@@ -18,8 +18,8 @@ final class SitemapControllerTest extends WebTestCase
 
         $em = static::getContainer()->get(EntityManagerInterface::class);
         $em->createQuery('DELETE FROM '.Spot::class)->execute();
-        $em->persist(Spot::create('Voile Lyon', 'voile-lyon', new Geo(45.76, 4.83), SpotType::FFV_CLUB));
-        $em->persist(Spot::create('Paris Voile', 'paris-voile', new Geo(48.85, 2.35), SpotType::FFV_CLUB));
+        $em->persist(Spot::create('Bairon Nautic Club', 'bairon-nautic-club', new Geo(49.60, 4.70), SpotType::FFV_CLUB, postcode: '08380'));
+        $em->persist(Spot::create('CNHS', 'cnhs', new Geo(48.85, 2.35), SpotType::FFV_CLUB, postcode: '75004'));
         $em->flush();
 
         $client->request('GET', '/sitemap.xml');
@@ -33,8 +33,10 @@ final class SitemapControllerTest extends WebTestCase
 
         $content = (string) $response->getContent();
         self::assertStringContainsString('<loc>http://localhost/</loc>', $content);
-        self::assertStringContainsString('<loc>http://localhost/forecast/paris-voile</loc>', $content);
-        self::assertStringContainsString('<loc>http://localhost/forecast/voile-lyon</loc>', $content);
+        self::assertStringContainsString('<loc>http://localhost/forecast/cnhs</loc>', $content);
+        self::assertStringContainsString('<loc>http://localhost/forecast/bairon-nautic-club</loc>', $content);
+        self::assertStringContainsString('<loc>http://localhost/spots/departement/08</loc>', $content);
+        self::assertStringContainsString('<loc>http://localhost/spots/departement/75</loc>', $content);
         self::assertStringNotContainsString('/forecast/48.85/2.35', $content);
     }
 }

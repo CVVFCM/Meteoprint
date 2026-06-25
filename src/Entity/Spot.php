@@ -40,12 +40,16 @@ class Spot
     #[Column(type: JsonbDocumentType::NAME, nullable: true, name: 'ffvClubId')]
     public private(set) ?FFVClubId $ffvClubId = null;
 
+    #[Column(length: 5, nullable: true)]
+    public private(set) ?string $postcode = null;
+
     private function __construct(
         string $name,
         string $slug,
         Geo $position,
         SpotType $type,
         ?FFVClubId $ffvClubId = null,
+        ?string $postcode = null,
     ) {
         $this->id = Uuid::v7();
         $this->name = $name;
@@ -53,6 +57,7 @@ class Spot
         $this->position = $position;
         $this->type = $type;
         $this->ffvClubId = $ffvClubId;
+        $this->postcode = self::normalizePostcode($postcode);
     }
 
     public static function create(
@@ -61,14 +66,16 @@ class Spot
         Geo $position,
         SpotType $type,
         ?FFVClubId $ffvClubId = null,
+        ?string $postcode = null,
     ): self {
-        return new self($name, $slug, $position, $type, $ffvClubId);
+        return new self($name, $slug, $position, $type, $ffvClubId, $postcode);
     }
 
-    public function update(string $name, Geo $position, ?string $slug = null): void
+    public function update(string $name, Geo $position, ?string $slug = null, ?string $postcode = null): void
     {
         $this->name = $name;
         $this->position = $position;
+        $this->postcode = self::normalizePostcode($postcode);
         if (null !== $slug) {
             $this->slug = $slug;
         }
@@ -77,5 +84,36 @@ class Spot
     public function relocate(Geo $position): void
     {
         $this->position = $position;
+    }
+
+    public function departmentCode(): ?string
+    {
+        return self::departmentCodeFromPostcode($this->postcode);
+    }
+
+    public static function departmentCodeFromPostcode(?string $postcode): ?string
+    {
+        $normalized = self::normalizePostcode($postcode);
+        if (null === $normalized) {
+            return null;
+        }
+
+        return str_starts_with($normalized, '97')
+            ? substr($normalized, 0, 3)
+            : substr($normalized, 0, 2);
+    }
+
+    private static function normalizePostcode(?string $postcode): ?string
+    {
+        if (null === $postcode) {
+            return null;
+        }
+
+        $normalized = preg_replace('/\s+/', '', trim($postcode));
+        if (null === $normalized || 1 !== preg_match('/^\d{5}$/', $normalized)) {
+            return null;
+        }
+
+        return $normalized;
     }
 }
