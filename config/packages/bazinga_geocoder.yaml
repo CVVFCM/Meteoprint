@@ -6,6 +6,11 @@ bazinga_geocoder:
     providers:
         nominatim:
             factory: Bazinga\GeocoderBundle\ProviderFactory\NominatimFactory
+            # Cache forward + reverse lookups (Nominatim usage policy expects caching and
+            # a low request rate). Coordinates are stable, so a long TTL is fine.
+            cache: geocoder.cache
+            cache_lifetime: 2592000 # 30 days
+            cache_precision: 4
             options:
                 # Nominatim usage policy requires an identifying User-Agent
                 root_url: 'https://nominatim.openstreetmap.org'

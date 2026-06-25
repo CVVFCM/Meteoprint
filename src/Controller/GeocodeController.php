@@ -28,6 +28,13 @@ final readonly class GeocodeController
     private const int MIN_QUERY_LENGTH = 2;
     private const int MAX_RESULTS = 8;
 
+    /**
+     * AROME HD coverage area — geocoding is constrained to these countries.
+     *
+     * @var list<string>
+     */
+    private const array COUNTRIES = ['fr', 'be', 'lu'];
+
     public function __construct(
         private ProviderAggregator $geocoder,
         private SpotRepository $spots,
@@ -93,7 +100,10 @@ final readonly class GeocodeController
     {
         try {
             $locations = $this->geocoder->geocodeQuery(
-                GeocodeQuery::create($query)->withLocale($locale)->withLimit(self::MAX_RESULTS),
+                GeocodeQuery::create($query)
+                    ->withLocale($locale)
+                    ->withLimit(self::MAX_RESULTS)
+                    ->withData('countrycodes', self::COUNTRIES),
             );
         } catch (GeocoderException) {
             // Never break the autocomplete UI on a provider/network failure.

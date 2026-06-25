@@ -14,8 +14,8 @@
 
             {{ form_start(form, {attr: {
                 class: 'home__form',
-                'data-controller': 'auto-submit',
-                'data-action': 'change->auto-submit#submit',
+                'data-controller': 'auto-submit place-prefill',
+                'data-action': 'change->auto-submit#submit symfony--ux-autocomplete--autocomplete:connect->place-prefill#seed',
             }}) }}
                 <div class="home__field">{{ form_row(form.place) }}</div>
                 <button type="submit" class="home__submit">{{ 'homepage.submit'|trans }}</button>
