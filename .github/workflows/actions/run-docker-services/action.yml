@@ -44,4 +44,4 @@ runs:
             run: docker compose run --rm php composer install
         -   name: Start services
             shell: bash
-            run: docker compose up --wait php --no-build || (docker compose logs && exit 1)
+            run: docker compose up --wait php --wait consumer --no-build || (docker compose logs && exit 1)
