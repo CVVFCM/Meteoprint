@@ -85,8 +85,13 @@ jobs:
                     key_file=/home/runner/.oci/key.pem
                     EOF
 
-                    printf "%s\n" "$OCI_API_KEY" > ~/.oci/key.pem
+                    # OCI_API_KEY holds the base64 of the PEM private key — base64 survives
+                    # GitHub-secret newline mangling that breaks a raw multi-line PEM.
+                    echo "$OCI_API_KEY" | base64 -d > ~/.oci/key.pem
                     chmod 600 ~/.oci/config ~/.oci/key.pem
+
+                    # Fail fast with a clear message if the key is malformed.
+                    openssl pkey -in ~/.oci/key.pem -noout
 
             -   name: Write kubeconfig
                 run: |
