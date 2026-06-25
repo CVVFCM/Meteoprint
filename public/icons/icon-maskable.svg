@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Meteoprint">
+    <!-- Full-bleed background; content kept inside the maskable safe zone (~66%). -->
+    <rect width="512" height="512" fill="#2b6cb0"/>
+    <g transform="translate(87 87) scale(0.66)">
+        <circle cx="372" cy="150" r="46" fill="#ffd166"/>
+        <path d="M264 92 C300 208 300 312 264 388 L148 388 C188 294 226 194 264 92 Z" fill="#ffffff"/>
+        <path d="M116 398 L404 398 C378 448 320 472 260 472 C200 472 152 448 116 398 Z" fill="#e8f1fb"/>
+    </g>
+</svg>

@@ -27,7 +27,11 @@
         {% if canonicalUrl|trim != '' %}
             <meta property="og:url" content="{{ canonicalUrl|trim }}">
         {% endif %}
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+        <link rel="icon" href="/icons/icon-192.png" sizes="192x192" type="image/png">
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+        <link rel="manifest" href="/manifest.webmanifest">
+        <meta name="theme-color" content="#2b6cb0">
         {% block stylesheets %}
         {% endblock %}
 
@@ -46,5 +50,12 @@
     </head>
     <body>
         {% block body %}{% endblock %}
+        <script>
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function () {
+                    navigator.serviceWorker.register('/sw.js').catch(function () {});
+                });
+            }
+        </script>
     </body>
 </html>
