@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'legal.meta_title'|trans }}{% endblock %}
+{% block meta_description %}{{ 'legal.meta_description'|trans }}{% endblock %}
+{% block canonical_url %}{{ absolute_url(path('legal')) }}{% endblock %}
+{% block meta_robots %}index,follow{% endblock %}
+
+{% block body %}
+    <main class="legal">
+        <header class="legal__head">
+            <h1>{{ 'legal.title'|trans }}</h1>
+            <a class="legal__back" href="{{ path('homepage') }}">{{ 'legal.back'|trans }}</a>
+        </header>
+
+        <article class="legal__block">
+            <h2>{{ 'legal.editor.title'|trans }}</h2>
+            <p>{{ 'legal.editor.body'|trans }}</p>
+        </article>
+
+        <article class="legal__block">
+            <h2>{{ 'legal.host.title'|trans }}</h2>
+            <p>{{ 'legal.host.body'|trans }}</p>
+        </article>
+
+        <article class="legal__block">
+            <h2>{{ 'legal.ip.title'|trans }}</h2>
+            <p>{{ 'legal.ip.body'|trans }}</p>
+        </article>
+
+        <article class="legal__block">
+            <h2>{{ 'legal.data.title'|trans }}</h2>
+            <p>{{ 'legal.data.body'|trans }}</p>
+        </article>
+
+        <article class="legal__block">
+            <h2>{{ 'legal.attributions.title'|trans }}</h2>
+            <p>{{ 'legal.attributions.intro'|trans }}</p>
+            <ul>
+                <li>{{ 'legal.attributions.meteo'|trans }}</li>
+                <li>{{ 'legal.attributions.geo'|trans }}</li>
+                <li>{{ 'legal.attributions.clubs'|trans }}</li>
+            </ul>
+        </article>
+    </main>
+{% endblock %}

@@ -50,6 +50,13 @@
     </head>
     <body>
         {% block body %}{% endblock %}
+        <footer class="site-footer">
+            <p>
+                © {{ 'now'|date('Y') }} {{ 'seo.site_name'|trans }}
+                · <a href="{{ path('legal') }}">{{ 'legal.title'|trans }}</a>
+                · <a href="{{ path('spot_departments') }}">{{ 'homepage.browse_departments'|trans }}</a>
+            </p>
+        </footer>
         <script>
             if ('serviceWorker' in navigator) {
                 window.addEventListener('load', function () {

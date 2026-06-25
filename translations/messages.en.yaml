@@ -32,6 +32,30 @@ homepage:
         q3: Do I need an account?
         a3: No. Search and the printable report are freely accessible.
 
+legal:
+    title: Legal notice
+    meta_title: 'Legal notice | Meteoprint'
+    meta_description: 'Legal notice for Meteoprint: publisher, host, personal data and attributions.'
+    back: Back to home
+    editor:
+        title: Publisher
+        body: 'Meteoprint is published on a personal, non-commercial basis by Yohan Giarelli, publication director. Contact via the project repository: github.com/cvvfcm/meteoprint.'
+    host:
+        title: Host
+        body: "The site is hosted on Oracle Cloud Infrastructure (Paris region, eu-paris-1) — Oracle France SAS, 15 boulevard Charles de Gaulle, 92700 Colombes, France, +33 (0)1 57 60 20 20."
+    ip:
+        title: Intellectual property
+        body: "Meteoprint's source code is released under the GPL-3.0-or-later licence (github.com/cvvfcm/meteoprint). Third-party trademarks, logos and data remain the property of their respective owners."
+    data:
+        title: Personal data
+        body: "Meteoprint requires no account and collects no personal data for commercial or advertising purposes. Place searches are sent to the Nominatim geocoding service (OpenStreetMap) and forecasts are fetched from Open-Meteo. No advertising cookie or third-party tracker is used; only a technical authorization cookie is set for real-time updates (Mercure)."
+    attributions:
+        title: Attributions
+        intro: 'Meteoprint relies on open data and services:'
+        meteo: "Weather forecasts — Open-Meteo (CC BY 4.0 licence), based on Météo-France's AROME (high-resolution) and ARPEGE models."
+        geo: 'Geocoding and addresses — OpenStreetMap / Nominatim (data under the ODbL licence).'
+        clubs: 'Sailing clubs — French Sailing Federation (FFVoile).'
+
 spot:
     type:
         ffv_club: FFVoile club
@@ -51,6 +75,7 @@ forecast:
     knots: kn
     gusts: gust
     footer: 'Generated with Meteoprint (meteoprint.cvvfcm.fr)'
+    source: 'Source: Météo-France · AROME HD / ARPÈGE'
     slot:
         0: Night
         9: Morning

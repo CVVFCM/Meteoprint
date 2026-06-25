@@ -32,6 +32,30 @@ homepage:
         q3: Faut-il créer un compte ?
         a3: Non. La recherche et le bulletin imprimable sont accessibles librement.
 
+legal:
+    title: Mentions légales
+    meta_title: 'Mentions légales | Meteoprint'
+    meta_description: 'Mentions légales du site Meteoprint : éditeur, hébergeur, données personnelles et attributions.'
+    back: Retour à l'accueil
+    editor:
+        title: Éditeur
+        body: 'Le site Meteoprint est édité à titre personnel et non commercial par Yohan Giarelli, directeur de la publication. Contact via le dépôt du projet : github.com/cvvfcm/meteoprint.'
+    host:
+        title: Hébergeur
+        body: "Le site est hébergé sur Oracle Cloud Infrastructure (région de Paris, eu-paris-1) — Oracle France SAS, 15 boulevard Charles de Gaulle, 92700 Colombes, France, +33 (0)1 57 60 20 20."
+    ip:
+        title: Propriété intellectuelle
+        body: 'Le code source de Meteoprint est publié sous licence GPL-3.0-or-later (github.com/cvvfcm/meteoprint). Les marques, logos et données de tiers restent la propriété de leurs titulaires respectifs.'
+    data:
+        title: Données personnelles
+        body: "Meteoprint ne nécessite aucun compte et ne collecte pas de données personnelles à des fins commerciales ou publicitaires. Les recherches de lieu sont transmises au service de géocodage Nominatim (OpenStreetMap) et les prévisions sont récupérées auprès d'Open-Meteo. Aucun cookie publicitaire ni traceur tiers n'est utilisé ; seul un cookie technique d'autorisation est déposé pour les mises à jour en temps réel (Mercure)."
+    attributions:
+        title: Attributions
+        intro: "Meteoprint s'appuie sur des données et services ouverts :"
+        meteo: 'Prévisions météo — Open-Meteo (licence CC BY 4.0), à partir des modèles AROME (haute résolution) et ARPEGE de Météo-France.'
+        geo: 'Géocodage et adresses — OpenStreetMap / Nominatim (données sous licence ODbL).'
+        clubs: 'Clubs nautiques — Fédération Française de Voile (FFVoile).'
+
 spot:
     type:
         ffv_club: Club FFVoile
@@ -51,6 +75,7 @@ forecast:
     knots: nds
     gusts: raf.
     footer: 'Généré avec Meteoprint (meteoprint.cvvfcm.fr)'
+    source: 'Origine Météo-France · AROME HD / ARPÈGE'
     slot:
         0: Nuit
         9: Matin

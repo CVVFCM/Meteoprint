@@ -41,6 +41,7 @@ final readonly class SitemapController
             'departmentListUrl' => $this->urlGenerator->generate('spot_departments', [], UrlGeneratorInterface::ABSOLUTE_URL),
             'departmentUrls' => $departmentUrls,
             'homepageUrl' => $this->urlGenerator->generate('homepage', [], UrlGeneratorInterface::ABSOLUTE_URL),
+            'legalUrl' => $this->urlGenerator->generate('legal', [], UrlGeneratorInterface::ABSOLUTE_URL),
             'spotUrls' => $spotUrls,
         ]));
         $response->headers->set('Content-Type', 'application/xml; charset=UTF-8');
