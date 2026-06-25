@@ -42,7 +42,7 @@
             {% endif %}
             <p class="forecast__coords">{{ 'forecast.coordinates'|trans({'%latitude%': position.latitude, '%longitude%': position.longitude}) }}</p>
             {% if spot is not null and spot.departmentCode is not null %}
-               <a class="forecast__directory" href="{{ path('spot_department', {department: spot.departmentCode}) }}">{{ 'forecast.department_link'|trans({'%department%': spot.departmentCode}) }}</a>
+                <a class="forecast__directory" href="{{ path('spot_department', {department: spot.departmentCode}) }}">{{ 'forecast.department_link'|trans({'%department%': spot.departmentCode}) }}</a>
             {% endif %}
             <a class="forecast__back" href="{{ path('homepage') }}">{{ 'forecast.back'|trans }}</a>
         </header>

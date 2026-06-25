@@ -510,6 +510,7 @@ body {
 
     /* Keep the place/spot name + coords on paper; drop the back link and live region. */
     .forecast__back,
+    .forecast__directory,
     turbo-mercure-stream-source {
         display: none;
     }
