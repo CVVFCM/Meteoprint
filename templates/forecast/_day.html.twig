@@ -14,7 +14,8 @@
             {% for slot in forecast.slots %}
                 {% set weatherLabel = slot.weatherCode|weather_label|trans({}, 'messages', 'fr') %}
                 <li class="slot">
-                    <span class="slot__when">{{ ('forecast.slot.' ~ slot.hour)|trans({}, 'messages', 'fr') }}</span>
+                    {% set slotDateTime = (day|date('Y-m-d', 'Europe/Paris') ~ ' ' ~ slot.hour ~ ':00')|date('c', 'Europe/Paris') %}
+                    <time class="slot__when" datetime="{{ slotDateTime }}">{{ ('forecast.slot.' ~ slot.hour)|trans({}, 'messages', 'fr') }}</time>
                     <span class="slot__weather">
                         <span class="slot__icon" title="{{ weatherLabel }}">{{ slot.weatherCode|weather_icon(slot.isDay) }}</span>
                         <span class="slot__weather-label">{{ weatherLabel }}</span>

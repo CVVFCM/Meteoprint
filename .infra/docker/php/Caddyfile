@@ -2,7 +2,6 @@
 	skip_install_trust
 
 	{$CADDY_GLOBAL_OPTIONS}
-	{$CADDY_CACHE_GLOBAL_OPTIONS}
 
 	frankenphp {
 		{$FRANKENPHP_CONFIG}
@@ -33,7 +32,10 @@
 	}
 
 	{$CADDY_SERVER_EXTRA_DIRECTIVES}
-	{$CADDY_CACHE_SITE_DIRECTIVES}
+
+	# Enable the Souin HTTP cache handler for this site.
+	# Respects Cache-Control, so only public responses are cached.
+	cache
 
 	# Disable Topics tracking if not enabled explicitly: https://github.com/jkarlin/topics
 	header ?Permissions-Policy "browsing-topics=()"
