@@ -30,6 +30,7 @@ jobs:
 
 
     playwright:
+        name: Tests Playwright / Screenshots
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
