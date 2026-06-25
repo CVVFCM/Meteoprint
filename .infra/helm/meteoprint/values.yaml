@@ -46,40 +46,6 @@ consumer:
 # Public hostname served by the app.
 host: meteoprint.cvvfcm.fr
 
-# Gateway API (Traefik on K3s). FrankenPHP serves plain HTTP on :80 in-cluster.
-gateway:
-  # When true, the chart renders the Gateway. Set false only to attach the HTTPRoute
-  # to a Gateway that already exists in the cluster.
-  create: true
-  # Gateway name the HTTPRoute attaches to (created here when create=true).
-  name: meteoprint
-  # Defaults to the release namespace when empty.
-  namespace: ""
-  # GatewayClass — Traefik's Gateway API provider. Verify: kubectl get gatewayclass
-  className: traefik
-  # Listener ports MUST match Traefik's entrypoint (container) ports — Traefik maps
-  # listeners to entrypoints by port, NOT the Service's external port. K3s bundled
-  # Traefik: web=8000, websecure=8443 (Service maps external 80/443 → these).
-  # Confirm: kubectl -n kube-system get deploy traefik -o jsonpath='{range .spec.template.spec.containers[0].ports[*]}{.name}={.containerPort}{"\n"}{end}'
-  httpPort: 8000
-  httpsPort: 8443
-  # Listener to attach the HTTPRoute to. Empty → attach to ALL listeners (HTTP works
-  # immediately; HTTPS once tls.enabled). Set to "websecure" to pin HTTPS-only.
-  sectionName: ""
-  tls:
-    # When true, adds the HTTPS (websecure) listener referencing secretName.
-    enabled: false
-    secretName: meteoprint-tls
-    # Issue secretName via a cert-manager Certificate CR. The referenced Issuer must
-    # already exist and be able to solve for this domain — given the node is private
-    # (behind Cloudflare/Tailscale), use a DNS-01 ClusterIssuer (e.g. Cloudflare),
-    # not HTTP-01.
-    certManager:
-      enabled: false
-      issuerRef:
-        name: letsencrypt-prod
-        kind: ClusterIssuer
-
 # Non-secret application configuration (rendered into a ConfigMap).
 app:
   env: prod
