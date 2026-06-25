@@ -86,7 +86,6 @@ jobs:
                     EOF
 
                     echo "$OCI_API_KEY" > ~/.oci/key.pem
-                    echo "OCI_API_KEY" >> ~/.oci/key.pem
                     chmod 600 ~/.oci/config ~/.oci/key.pem
 
             -   name: Write kubeconfig
