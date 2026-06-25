@@ -66,15 +66,14 @@ jobs:
                 uses: azure/setup-helm@v5
 
 
-            -   name: Install OCI CLI & Setup Config
-                run: |
-                    bash -c "$(curl -L https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh)" -- --accept-all-defaults
-                    echo "/home/runner/bin" >> $GITHUB_PATH
-
-                    mkdir -p ~/.oci
-                    echo "${{ secrets.OCI_CONFIG }}" > ~/.oci/config
-                    echo "${{ secrets.OCI_PRIVATE_KEY }}" > ~/.oci/key.pem
-                    chmod 600 ~/.oci/config ~/.oci/key.pem
+            -   name: Configure OCI CLI
+                uses: oracle-actions/configure-oci-cli@v1.1.1
+                with:
+                    tenancy: ${{ secrets.OCI_TENANCY_OCID }}
+                    user: ${{ secrets.OCI_USER_OCID }}
+                    fingerprint: ${{ secrets.OCI_FINGERPRINT }}
+                    region: ${{ secrets.OCI_REGION }}
+                    api_key: ${{ secrets.OCI_API_KEY }}
 
             -   name: Write kubeconfig
                 run: |
