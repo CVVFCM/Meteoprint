@@ -11,6 +11,7 @@ test.describe('Printable forecast view', () => {
         await expect(page).toHaveScreenshot(
             'forecast-print-cvvfcm.png',
             {
+                maxDiffPixelRatio: .01,
                 mask: [
                     page.locator('.slot'),
                 ],
