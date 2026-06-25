@@ -40,6 +40,11 @@ spec:
             - async
             - --no-debug
             - -vv
+            # Recycle the worker periodically (memory hygiene); on exit the container
+            # restarts. The worker is PID 1, so a crash also exits the container — no
+            # liveness probe needed (and the image ships no pgrep/ps for one anyway).
+            - --time-limit=3600
+            - --memory-limit=128M
           envFrom:
             - configMapRef:
                 name: {{ include "meteoprint.fullname" . }}-config
@@ -49,13 +54,6 @@ spec:
           env:
             {{- include "meteoprint.dbEnv" . | nindent 12 }}
           {{- end }}
-          livenessProbe:
-            exec:
-              command: ["sh", "-c", "pgrep -f 'messenger:consume' >/dev/null"]
-            initialDelaySeconds: 20
-            periodSeconds: 30
-            timeoutSeconds: 10
-            failureThreshold: 3
           resources:
             {{- toYaml .Values.consumer.resources | nindent 12 }}
       {{- with .Values.consumer.nodeSelector }}

@@ -4,14 +4,32 @@ seo:
 homepage:
     title: Printable weather
     subtitle: Search for a place to generate its weather report.
-    meta_title: Printable weather reports for sailing spots | Meteoprint
-    meta_description: Search for a place or sailing club to generate a printable weather report for today and tomorrow.
+    meta_title: Printable weather report for sailing and regattas | Meteoprint
+    meta_description: "Printable sailing weather report: ideal for the race committee. Wind, gusts and today/tomorrow forecast, ready to post."
     submit: View weather
     search:
         label: Place
         group:
             spots: Sailing clubs
             places: Places
+    intro:
+        lead: Meteoprint generates a clean, printable weather report for today and tomorrow, for any place or FFVoile sailing club — made to be posted up.
+    uses:
+        title: For the race committee
+        body: During a regatta, the race committee must post the day's weather on the official notice board. Consumer weather sites are cluttered and print poorly. Meteoprint outputs a clean A4 landscape report — wind in knots, direction, gusts, across day slots (morning, noon, afternoon, evening) — ready to print and pin up.
+    how:
+        title: How it works
+        step1: Search for a place or an FFVoile sailing club.
+        step2: Today's and tomorrow's report is generated automatically.
+        step3: Print it (Ctrl/Cmd + P) — the landscape layout is already set.
+    faq:
+        title: Frequently asked questions
+        q1: Why print the weather for a regatta?
+        a1: "Posting the weather on the official notice board is mandatory (French Sailing Federation Sporting Rules, II.3.5.4). A printed sheet stays readable on the dock, with no network or screen."
+        q2: What data is shown?
+        a2: Weather code, temperature, wind (knots) with direction and gusts, across five slots of the day, for today and tomorrow.
+        q3: Do I need an account?
+        a3: No. Search and the printable report are freely accessible.
 
 spot:
     type:

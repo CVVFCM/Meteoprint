@@ -7,17 +7,20 @@
         {% set canonicalUrl %}{% block canonical_url %}{% endblock %}{% endset %}
         {% set robotsContent %}{% block meta_robots %}index,follow{% endblock %}{% endset %}
         {% set ogType %}{% block meta_og_type %}website{% endblock %}{% endset %}
-        <title>{{ pageTitle|trim }}</title>
+        {# |raw: the captured blocks are already HTML-escaped once; the filters below
+           drop Twig's "safe" flag, so without raw the entities would be double-encoded
+           (e.g. apostrophes as &amp;#039; in the SERP). #}
+        <title>{{ pageTitle|trim|raw }}</title>
         {% if metaDescription|trim != '' %}
-            <meta name="description" content="{{ metaDescription|striptags|trim }}">
+            <meta name="description" content="{{ metaDescription|striptags|trim|raw }}">
         {% endif %}
         <meta name="robots" content="{{ robotsContent|trim }}">
         {% if canonicalUrl|trim != '' %}
             <link rel="canonical" href="{{ canonicalUrl|trim }}">
         {% endif %}
-        <meta property="og:title" content="{{ pageTitle|striptags|trim }}">
+        <meta property="og:title" content="{{ pageTitle|striptags|trim|raw }}">
         {% if metaDescription|trim != '' %}
-            <meta property="og:description" content="{{ metaDescription|striptags|trim }}">
+            <meta property="og:description" content="{{ metaDescription|striptags|trim|raw }}">
         {% endif %}
         <meta property="og:type" content="{{ ogType|trim }}">
         <meta property="og:site_name" content="{{ 'seo.site_name'|trans }}">
@@ -31,6 +34,8 @@
         {% block javascripts %}
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
+
+        {% block structured_data %}{% endblock %}
 
         {% set frankenphpHotReload = app.request.server.get('FRANKENPHP_HOT_RELOAD') %}
         {% if frankenphpHotReload %}

@@ -144,24 +144,22 @@ body {
     display: inline-block;
 }
 
-.home {
-    min-height: 100dvh;
-    display: grid;
-    place-items: center;
-    padding: 2rem 1rem;
+.home__hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    padding: 3rem 1rem 2.5rem;
+    text-align: center;
     background:
         radial-gradient(120% 80% at 50% -10%, #e8f1fb 0%, rgb(232 241 251 / 0%) 60%),
         linear-gradient(180deg, var(--bg) 0%, #eef3fa 100%);
 }
 
-.home__hero {
-    width: 100%;
-    max-width: 34rem;
-    text-align: center;
-}
-
 .home__intro {
-    margin-bottom: 1.75rem;
+    margin: 0;
+    max-width: 34rem;
 }
 
 .home__title {
@@ -187,6 +185,8 @@ body {
     display: flex;
     gap: 0.6rem;
     align-items: start;
+    width: 100%;
+    max-width: 34rem;
     padding: 0.85rem;
     background: #fff;
     border: 1px solid var(--line);
@@ -218,10 +218,18 @@ body {
     padding: 0.7rem 0.9rem;
     border: 1px solid var(--line);
     border-radius: 0.65rem;
-    font-size: 1rem;
+    font-size: 1.15rem;
     color: var(--ink);
     background: var(--bg);
     box-shadow: none;
+}
+
+/* TomSelect renders the typed text and dropdown options in nested nodes — keep them
+   at the same legible size as the control. */
+.home__field .ts-control input,
+.home__field .ts-dropdown,
+.home__field .ts-dropdown .option {
+    font-size: 1.15rem;
 }
 
 .home__field .ts-control:focus-within,
@@ -255,6 +263,55 @@ body {
 .home__submit:focus-visible {
     outline: 2px solid var(--accent-strong);
     outline-offset: 2px;
+}
+
+.home__content {
+    max-width: 48rem;
+    margin: 0 auto;
+    padding: 1rem 1rem 4rem;
+}
+
+.home__lead {
+    margin: 0 0 2rem;
+    font-size: 1.2rem;
+    text-wrap: pretty;
+}
+
+.home__block {
+    margin: 0 0 2rem;
+}
+
+.home__block h2 {
+    margin: 0 0 0.5rem;
+    font-size: 1.4rem;
+}
+
+.home__block p {
+    margin: 0;
+    color: var(--muted);
+    text-wrap: pretty;
+}
+
+.home__steps {
+    margin: 0;
+    padding-left: 1.25rem;
+    display: grid;
+    gap: 0.4rem;
+    color: var(--muted);
+}
+
+.home__faq dl {
+    margin: 0;
+}
+
+.home__faq dt {
+    margin-top: 1rem;
+    font-weight: 600;
+}
+
+.home__faq dd {
+    margin: 0.25rem 0 0;
+    color: var(--muted);
 }
 
 @media (width <= 40rem) {

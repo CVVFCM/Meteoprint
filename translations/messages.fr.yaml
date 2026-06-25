@@ -4,14 +4,32 @@ seo:
 homepage:
     title: Météo imprimable
     subtitle: Recherchez un lieu pour générer son bulletin météo.
-    meta_title: Bulletins météo imprimables pour les spots nautiques | Meteoprint
-    meta_description: Recherchez un lieu ou un club nautique pour générer un bulletin météo imprimable pour aujourd'hui et demain.
+    meta_title: Bulletin météo imprimable pour la voile et les régates | Meteoprint
+    meta_description: "Bulletin météo imprimable pour la voile : idéal pour le comité de course. Vent, rafales et prévisions aujourd'hui et demain, prêt à afficher."
     submit: Voir la météo
     search:
         label: Lieu
         group:
             spots: Clubs FFVoile
             places: Lieux
+    intro:
+        lead: Meteoprint génère un bulletin météo clair et imprimable, pour aujourd'hui et demain, sur n'importe quel lieu ou club FFVoile — pensé pour être affiché.
+    uses:
+        title: Pour le comité de course
+        body: Pendant une régate, le comité de course doit afficher la météo du jour au tableau officiel. Les sites météo grand public sont chargés et s'impriment mal. Meteoprint produit un bulletin propre au format A4 paysage — vent en nœuds, direction, rafales, par créneaux (matin, midi, après-midi, soir) — prêt à être imprimé et épinglé.
+    how:
+        title: Comment ça marche
+        step1: Recherchez un lieu ou un club FFVoile.
+        step2: Le bulletin d'aujourd'hui et de demain se génère automatiquement.
+        step3: Imprimez (Ctrl/Cmd + P) — la mise en page paysage est déjà prête.
+    faq:
+        title: Questions fréquentes
+        q1: Pourquoi imprimer la météo en régate ?
+        a1: "L'affichage de la météo au tableau officiel est obligatoire (Règlement Sportif de la Fédération Française de Voile, II.3.5.4). Une feuille imprimée reste lisible, sans réseau ni écran."
+        q2: Quelles données sont affichées ?
+        a2: Le code météo, la température, le vent (nœuds) avec sa direction et les rafales, sur cinq créneaux de la journée, pour aujourd'hui et demain.
+        q3: Faut-il créer un compte ?
+        a3: Non. La recherche et le bulletin imprimable sont accessibles librement.
 
 spot:
     type:
