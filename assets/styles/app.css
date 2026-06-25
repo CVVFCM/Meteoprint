@@ -27,12 +27,17 @@ body {
 
 .forecast__head {
     text-align: center;
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--line);
 }
 
 .forecast__head h1 {
     margin: 0 0 0.25rem;
-    font-size: 2rem;
+    font-size: 2.25rem;
+    background: linear-gradient(135deg, var(--ink) 0%, var(--accent) 100%);
+    background-clip: text;
+    color: transparent;
 }
 
 .forecast__coords {
@@ -62,15 +67,24 @@ body {
     background: #fff;
     border: 1px solid var(--line);
     border-radius: 0.75rem;
-    padding: 1rem 1.25rem;
+    padding: 1.25rem 1.5rem;
+    box-shadow: 0 1px 3px rgb(20 33 61 / 8%);
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.day:hover {
+    box-shadow: 0 8px 24px -8px rgb(20 33 61 / 18%);
+    transform: translateY(-2px);
 }
 
 .day__title {
-    margin: 0 0 0.75rem;
-    font-size: 1.25rem;
+    margin: 0 0 1rem;
+    font-size: 1.35rem;
     display: flex;
     justify-content: space-between;
     align-items: baseline;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--line);
 }
 
 .day__date {
@@ -92,16 +106,25 @@ body {
 
 .slot {
     display: grid;
-    grid-template-columns: 6rem 6.5rem 1fr auto;
+    grid-template-columns: 5.5rem 7rem 1fr auto;
     align-items: center;
     gap: 0.75rem;
-    padding: 0.6rem 0;
+    padding: 0.75rem 0;
     border-top: 1px solid var(--line);
     font-size: 1.1rem;
+    transition: background-color 0.15s ease;
 }
 
 .slot:first-child {
     border-top: 0;
+}
+
+.slot:hover {
+    background: rgb(232 241 251 / 40%);
+    margin: 0 -0.75rem;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+    border-radius: 0.5rem;
 }
 
 .slot__when {
@@ -117,8 +140,9 @@ body {
 }
 
 .slot__icon {
-    font-size: 1.6rem;
+    font-size: 1.75rem;
     line-height: 1;
+    filter: drop-shadow(0 1px 1px rgb(20 33 61 / 15%));
 }
 
 .slot__weather-label {
@@ -130,6 +154,8 @@ body {
 
 .slot__temp {
     font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    color: var(--ink);
 }
 
 .slot__wind {
@@ -517,10 +543,14 @@ body {
 
     .forecast__head {
         margin-bottom: 4mm;
+        padding-bottom: 0;
+        border-bottom: 1px solid #000;
     }
 
     .forecast__head h1 {
         font-size: 1.4rem;
+        background: none;
+        color: #000;
     }
 
     /* Fill exactly one page (height relative to the page box, not 100vh which overflows)
@@ -539,5 +569,21 @@ body {
     .day {
         border-color: #000;
         break-inside: avoid;
+        box-shadow: none;
+    }
+
+    .day:hover {
+        transform: none;
+    }
+
+    .slot:hover {
+        background: none;
+        margin: 0;
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .slot__icon {
+        filter: none;
     }
 }
