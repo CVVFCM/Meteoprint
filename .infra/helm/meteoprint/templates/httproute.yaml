@@ -8,6 +8,7 @@ spec:
     parentRefs:
         -   name: main
             namespace: traefik
+            sectionName: websecure
     hostnames:
         - {{ .Values.host | quote }}
     rules:
