@@ -1,7 +1,9 @@
 # Default values for meteoprint.
 
 image:
-  repository: cvvfcm/meteoprint-app
+  # Fully qualified: OKE's runtime enforces short-name mode and rejects the bare
+  # "cvvfcm/meteoprint-app" as ambiguous.
+  repository: docker.io/cvvfcm/meteoprint-app
   tag: latest
   pullPolicy: IfNotPresent
 
