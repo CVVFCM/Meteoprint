@@ -71,7 +71,7 @@ jobs:
                     curl -L -O https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh
                     chmod +x install.sh
                     ./install.sh --accept-all-defaults
-                    echo "/home/runner/bin" >> $GITHUB_PATH
+                    echo "/home/runner/bin" >> "$GITHUB_PATH"
 
                     mkdir -p ~/.oci
                     cat <<EOF > ~/.oci/config
@@ -83,12 +83,13 @@ jobs:
                     key_file=/home/runner/.oci/key.pem
                     EOF
 
-                    cat << 'EOF' > ~/.oci/key.pem
-                    ${{ secrets.OCI_API_KEY }}
-                    EOF
+                    # OCI_API_KEY is base64encode(file(private_key)) in Terraform — decode
+                    # it back to the raw PEM (writing it verbatim would store base64 text).
+                    echo "${{ secrets.OCI_API_KEY }}" | base64 -d > ~/.oci/key.pem
 
                     chmod 600 ~/.oci/config ~/.oci/key.pem
 
+                    # Fail fast with a clear message if the key is malformed.
                     openssl pkey -in ~/.oci/key.pem -noout
 
             -   name: Write kubeconfig
