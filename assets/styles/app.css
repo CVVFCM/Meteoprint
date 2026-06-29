@@ -520,8 +520,45 @@ body {
    <style amp-custom>, and AMP's CSS parser rejects the range syntax `(width <= 40rem)`. */
 /* stylelint-disable-next-line media-feature-range-notation */
 @media (max-width: 40rem) {
+    .forecast {
+        padding: 1.5rem 0.75rem 3rem;
+    }
+
     .forecast__grid {
         grid-template-columns: 1fr;
+    }
+
+    .day {
+        padding: 1.25rem 1rem;
+    }
+
+    /* The desktop 4-column slot (fixed 5.5rem + 7rem columns) overflows a phone. Reflow to
+       two rows: time | temp on top, weather | wind below. */
+    .slot {
+        grid-template-columns: 1fr auto;
+        gap: 0.3rem 0.75rem;
+        min-height: 0;
+    }
+
+    .slot__when {
+        grid-area: 1 / 1;
+    }
+
+    .slot__temp {
+        grid-area: 1 / 2;
+        justify-self: end;
+    }
+
+    .slot__weather {
+        grid-area: 2 / 1;
+        flex-direction: row;
+        align-items: center;
+        gap: 0.4rem;
+        text-align: left;
+    }
+
+    .slot__wind {
+        grid-area: 2 / 2;
     }
 
     .home__form {

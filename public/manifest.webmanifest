@@ -1,4 +1,5 @@
 {
+    "id": "/",
     "name": "Meteoprint",
     "short_name": "Meteoprint",
     "description": "Bulletin météo imprimable pour la voile et les régates, pensé pour les comités de courses.",
@@ -29,6 +30,22 @@
             "sizes": "512x512",
             "type": "image/png",
             "purpose": "maskable"
+        }
+    ],
+    "screenshots": [
+        {
+            "src": "/screenshots/forecast-narrow.png",
+            "sizes": "360x740",
+            "type": "image/png",
+            "form_factor": "narrow",
+            "label": "Bulletin météo sur mobile"
+        },
+        {
+            "src": "/screenshots/forecast-wide.png",
+            "sizes": "1280x800",
+            "type": "image/png",
+            "form_factor": "wide",
+            "label": "Bulletin météo sur ordinateur"
         }
     ]
 }
