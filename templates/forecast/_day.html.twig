@@ -25,7 +25,12 @@
                         {# wind_direction_10m is the bearing the wind blows FROM #}
                         <span class="slot__wind-dir">
                             {{ slot.windDirection }}°
-                            <span class="slot__arrow" style="transform: rotate({{ slot.windDirection }}deg)" aria-hidden="true">↓</span>
+                            {% if amp|default(false) %}
+                                {# AMP forbids the inline style attribute, so snap to one of 16 bucket classes (22.5° steps). #}
+                                <span class="slot__arrow slot__arrow--dir-{{ (slot.windDirection / 22.5)|round % 16 }}" aria-hidden="true">↓</span>
+                            {% else %}
+                                <span class="slot__arrow" style="transform: rotate({{ slot.windDirection }}deg)" aria-hidden="true">↓</span>
+                            {% endif %}
                         </span>
                         <span class="slot__wind-speed">
                             {{ slot.windSpeed|round }}&nbsp;{{ 'forecast.knots'|trans({}, 'messages', 'fr') }}

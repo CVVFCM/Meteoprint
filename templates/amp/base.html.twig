@@ -1,24 +1,22 @@
 <!DOCTYPE html>
-<html lang="{{ app.request.locale|default('en') }}">
+<html amp lang="{{ app.request.locale|default('en') }}">
     <head>
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width">
         {% set pageTitle %}{% block title %}Welcome!{% endblock %}{% endset %}
         {% set metaDescription %}{% block meta_description %}{% endblock %}{% endset %}
         {% set canonicalUrl %}{% block canonical_url %}{% endblock %}{% endset %}
         {% set robotsContent %}{% block meta_robots %}index,follow{% endblock %}{% endset %}
         {% set ogType %}{% block meta_og_type %}website{% endblock %}{% endset %}
         {# |raw: the captured blocks are already HTML-escaped once; the filters below
-           drop Twig's "safe" flag, so without raw the entities would be double-encoded
-           (e.g. apostrophes as &amp;#039; in the SERP). #}
+           drop Twig's "safe" flag, so without raw the entities would be double-encoded. #}
         <title>{{ pageTitle|trim|raw }}</title>
         {% if metaDescription|trim != '' %}
             <meta name="description" content="{{ metaDescription|striptags|trim|raw }}">
         {% endif %}
         <meta name="robots" content="{{ robotsContent|trim }}">
-        {% if canonicalUrl|trim != '' %}
-            <link rel="canonical" href="{{ canonicalUrl|trim }}">
-        {% endif %}
-        {% block amphtml %}{% if amphtml is defined and amphtml %}<link rel="amphtml" href="{{ amphtml }}">{% endif %}{% endblock %}
+        {# AMP requires a canonical link pointing at the non-AMP page. #}
+        <link rel="canonical" href="{{ canonicalUrl|trim }}">
         <meta property="og:title" content="{{ pageTitle|striptags|trim|raw }}">
         {% if metaDescription|trim != '' %}
             <meta property="og:description" content="{{ metaDescription|striptags|trim|raw }}">
@@ -33,22 +31,15 @@
         <link rel="apple-touch-icon" href="/apple-touch-icon.png">
         <link rel="manifest" href="/manifest.webmanifest">
         <meta name="theme-color" content="#2b6cb0">
-        {% block stylesheets %}
-        {% endblock %}
 
-        {% block javascripts %}
-            {% block importmap %}{{ importmap('app') }}{% endblock %}
-        {% endblock %}
+        {# Required AMP boilerplate. #}
+        <style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style><noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
+        <script async src="https://cdn.ampproject.org/v0.js"></script>
+
+        {# Inline the app's compiled CSS — AMP allows exactly one <style amp-custom>. #}
+        <style amp-custom>{{ amp_inline_styles() }}</style>
 
         {% block structured_data %}{% endblock %}
-
-        {% set frankenphpHotReload = app.request.server.get('FRANKENPHP_HOT_RELOAD') %}
-        {% if frankenphpHotReload %}
-        <meta name="frankenphp-hot-reload:url" content="{{ frankenphpHotReload }}">
-        <script src="https://cdn.jsdelivr.net/npm/idiomorph"></script>
-        <script src="https://cdn.jsdelivr.net/npm/frankenphp-hot-reload/+esm" type="module"></script>
-        {% endif %}
-        <script src="//consent.giarel.li/api.js" defer></script>
     </head>
     <body>
         {% block body %}{% endblock %}
@@ -59,12 +50,5 @@
                 · <a href="{{ path('spot_departments') }}">{{ 'homepage.browse_departments'|trans }}</a>
             </p>
         </footer>
-        <script>
-            if ('serviceWorker' in navigator) {
-                window.addEventListener('load', function () {
-                    navigator.serviceWorker.register('/sw.js').catch(function () {});
-                });
-            }
-        </script>
     </body>
 </html>

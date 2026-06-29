@@ -10,10 +10,12 @@ use App\Geocoding\ReverseGeocoder;
 use App\Repository\ForecastRepository;
 use App\ValueObject\Geo;
 use Symfony\Component\Clock\ClockInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mercure\HubInterface;
 use Symfony\Component\Mercure\Update;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Translation\LocaleSwitcher;
 use Twig\Environment;
 
@@ -34,10 +36,11 @@ final readonly class ForecastPageRenderer
         private HubInterface $hub,
         private ReverseGeocoder $reverseGeocoder,
         private LocaleSwitcher $localeSwitcher,
+        private UrlGeneratorInterface $urlGenerator,
     ) {
     }
 
-    public function render(Geo $rawPosition, ?Spot $spot = null): Response
+    public function render(Geo $rawPosition, ?Spot $spot = null, bool $amp = false): Response
     {
         $position = new Geo(
             round($rawPosition->latitude, self::PRECISION),
@@ -84,12 +87,30 @@ final readonly class ForecastPageRenderer
         // fresh page is static for the rest of its freshness window.
         $live = $dispatchedFetch;
 
+        // AMP carries no custom JS, so it can't run the live stream. Serve AMP only for a
+        // fully fresh (cacheable) page; while a fetch is pending, redirect to the canonical
+        // page so a JS client gets the live updates. AMP is only wired for saved spots.
+        if ($amp && $live && null !== $spot) {
+            return new RedirectResponse(
+                $this->urlGenerator->generate('forecast_spot', ['slug' => $spot->slug]),
+            );
+        }
+
         $address = null === $spot
             ? $this->reverseGeocoder->address($position, $this->localeSwitcher->getLocale())
             : null;
 
-        $response = new Response($this->twig->render('forecast/index.html.twig', [
+        // Advertise the AMP variant only when the canonical page is fresh (so the linked AMP
+        // page won't itself redirect) and indexable (saved spots only).
+        $amphtml = !$amp && !$live && null !== $spot
+            ? $this->urlGenerator->generate('forecast_spot_amp', ['slug' => $spot->slug], UrlGeneratorInterface::ABSOLUTE_URL)
+            : null;
+
+        $template = $amp ? 'forecast/index.amp.html.twig' : 'forecast/index.html.twig';
+
+        $response = new Response($this->twig->render($template, [
             'address' => $address,
+            'amphtml' => $amphtml,
             'days' => $days,
             'lastEventId' => $lastEventId,
             'live' => $live,

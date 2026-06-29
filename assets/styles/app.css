@@ -516,6 +516,9 @@ body {
     white-space: nowrap;
 }
 
+/* Legacy (non-range) notation on purpose: this stylesheet is inlined into AMP pages as
+   <style amp-custom>, and AMP's CSS parser rejects the range syntax `(width <= 40rem)`. */
+/* stylelint-disable-next-line media-feature-range-notation */
 @media (max-width: 40rem) {
     .forecast__grid {
         grid-template-columns: 1fr;

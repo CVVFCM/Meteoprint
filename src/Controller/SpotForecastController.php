@@ -28,13 +28,20 @@ final readonly class SpotForecastController
         requirements: ['slug' => '[a-z0-9][a-z0-9-]*'],
         methods: [Request::METHOD_GET],
     )]
-    public function __invoke(string $slug): Response
+    #[Route(
+        '/forecast/{slug}.amp',
+        name: 'forecast_spot_amp',
+        requirements: ['slug' => '[a-z0-9][a-z0-9-]*'],
+        defaults: ['amp' => true],
+        methods: [Request::METHOD_GET],
+    )]
+    public function __invoke(string $slug, bool $amp = false): Response
     {
         $spot = $this->spots->findOneBySlug($slug);
         if (null === $spot) {
             throw new NotFoundHttpException();
         }
 
-        return $this->renderer->render($spot->position, $spot);
+        return $this->renderer->render($spot->position, $spot, $amp);
     }
 }
