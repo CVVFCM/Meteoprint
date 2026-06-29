@@ -638,16 +638,18 @@ body {
         font-size: 12pt;
     }
 
-    uzu-content {
-        display: none;
-    }
-
     /* Keep the place/spot name + coords on paper; drop the back link and live region. */
     .forecast__back,
     .forecast__directory,
     .site-footer,
     turbo-mercure-stream-source {
         display: none;
+    }
+
+    /* Cookie-consent web component injected by consent.giarel.li. !important defeats the
+       component's own :host display/position rule (higher specificity than a bare tag). */
+    uzu-consent {
+        display: none !important;
     }
 
     .forecast__head {
