@@ -177,6 +177,26 @@ body {
     display: inline-block;
 }
 
+/* AMP wind-direction buckets: the canonical page rotates the arrow with an inline
+   `style` (exact degrees, re-applied by live updates), but AMP forbids inline styles,
+   so the AMP partial picks one of 16 classes (22.5° steps) instead. */
+.slot__arrow--dir-0 { transform: rotate(0deg); }
+.slot__arrow--dir-1 { transform: rotate(22.5deg); }
+.slot__arrow--dir-2 { transform: rotate(45deg); }
+.slot__arrow--dir-3 { transform: rotate(67.5deg); }
+.slot__arrow--dir-4 { transform: rotate(90deg); }
+.slot__arrow--dir-5 { transform: rotate(112.5deg); }
+.slot__arrow--dir-6 { transform: rotate(135deg); }
+.slot__arrow--dir-7 { transform: rotate(157.5deg); }
+.slot__arrow--dir-8 { transform: rotate(180deg); }
+.slot__arrow--dir-9 { transform: rotate(202.5deg); }
+.slot__arrow--dir-10 { transform: rotate(225deg); }
+.slot__arrow--dir-11 { transform: rotate(247.5deg); }
+.slot__arrow--dir-12 { transform: rotate(270deg); }
+.slot__arrow--dir-13 { transform: rotate(292.5deg); }
+.slot__arrow--dir-14 { transform: rotate(315deg); }
+.slot__arrow--dir-15 { transform: rotate(337.5deg); }
+
 .home__hero {
     display: flex;
     flex-direction: column;
@@ -496,7 +516,7 @@ body {
     white-space: nowrap;
 }
 
-@media (width <= 40rem) {
+@media (max-width: 40rem) {
     .forecast__grid {
         grid-template-columns: 1fr;
     }
@@ -613,6 +633,10 @@ body {
         color: #000;
         font-family: "DejaVu Sans", Arial, sans-serif;
         font-size: 12pt;
+    }
+
+    uzu-content {
+        display: none;
     }
 
     /* Keep the place/spot name + coords on paper; drop the back link and live region. */
