@@ -1,0 +1,16 @@
+api_platform:
+    title: Meteoprint
+    version: 1.0.0
+    # Only used for the MCP tool — no Doctrine-backed REST resources.
+    doctrine: false
+    formats:
+        jsonld: ['application/ld+json']
+        json: ['application/json']
+    mcp:
+        enabled: true
+        # Plain JSON tool payloads — agents don't need JSON-LD @context/@id noise.
+        format: json
+    defaults:
+        stateless: true
+        cache_headers:
+            vary: ['Content-Type', 'Authorization', 'Origin']

@@ -1,0 +1,13 @@
+mcp:
+    app: 'meteoprint'
+    version: '1.0.0'
+    description: 'Bulletin météo pour la voile : prévisions du jour et du lendemain par coordonnées.'
+    client_transports:
+        stdio: false
+        http: true
+    http:
+        path: '/mcp'
+        session:
+            store: 'file'
+            directory: '%kernel.cache_dir%/mcp-sessions'
+            ttl: 3600

@@ -117,6 +117,21 @@ App served at `https://localhost` (ports 80/443 configurable via `HTTP_PORT`/`HT
   the `controller.service_arguments` tag in `services.yaml`. (Set the 422 status on an
   invalid submitted form by hand — there is no base class to do it.)
 
+## Testing — MANDATORY
+
+**Every new PHP feature ships with PHPUnit coverage.** A feature without tests is
+not finished — same rule as the linters.
+
+- **Unit/integration**: `KernelTestCase` for services (real repository + DB,
+  `MockHttpClient` for outbound HTTP, `MockClock` for time, mock `HubInterface`
+  for Mercure) — see `tests/Bridge/OpenMeteo/MessageHandler/FetchForecastHandlerTest.php`,
+  `tests/State/WeatherForecastProcessorTest.php`.
+- **Functional**: `WebTestCase` through the real HTTP entry point (controllers,
+  `/mcp` JSON-RPC) — see `tests/Controller/`.
+- Cover at minimum: the happy path, the branch variants that change behavior
+  (cache hit vs miss, fresh vs stale), and input validation/error handling.
+- Run `make reset-test` once (creates the test DB), then `make test`.
+
 ## Linters — MANDATORY
 
 All produced code MUST pass every linter the CI runs (`.github/workflows/ci.yaml`).
